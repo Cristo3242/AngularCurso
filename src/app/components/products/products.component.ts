@@ -14,5 +14,32 @@ export class ProductsComponent {
   //Product es una interface que contiene objetos 
 
   products: Product []= [
+    {id: 1,
+    name: 'Teclado mecanico',
+    price: 850,
+    stock: 12,
+    category: 'Teclado'
+  },
+  {
+    id: 2,
+    name: 'Mouse gamer',
+    price: 450,
+    stock: 8,
+    category: 'Mouse'
+  },
+  {
+    id: 3,
+    name: 'Monitor',
+    price: 3200,
+    stock: 4,
+    category: 'Monitor'
+  },
+  {
+    id: 4,
+    name: 'Audifonos',
+    price: 1200,
+    stock: 15,
+    category: 'Audifonos'
+  }
 ];
 }
