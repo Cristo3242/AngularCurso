@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { empleado } from '../../interfaces/empleado.interface';
 import { Puesto } from '../../interfaces/puesto.interface';
 
 @Component({
   selector: 'app-empleados',
   standalone: true,
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './empleados.component.html',
   styleUrl: './empleados.component.css'
 })
@@ -37,4 +38,10 @@ export class EmpleadosComponent {
     NombrePuesto: 'Desarrollador'
   }
 ];
+
+  nombre: string = '';
+  apellidos: string = '';
+  fnacimiento: string = '';
+  telefono: string = '';
+  puestoID: number = 0;
 }
