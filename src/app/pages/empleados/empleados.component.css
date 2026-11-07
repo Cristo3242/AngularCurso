@@ -1,0 +1,43 @@
+.empleados-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 24px;
+    font-family: Arial, sans-serif;
+}
+
+.page-header {
+    margin-bottom: 30px;
+}
+
+.page-header h1 {
+    font-size: 28px;
+    color: #1e293b;
+}
+
+.page-header p {
+    color: #64748b;
+}
+
+.tblempleados {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.tblempleados th, .tblempleados td {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.tblempleados th {
+    background-color: #e61d1d;
+    color: white;
+}
+
+.tblempleados tbody tr:hover {
+    background-color: #f1f5f9;
+}
