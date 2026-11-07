@@ -1,0 +1,37 @@
+<div>
+    <header>
+        <h1>Gestion y visualizacion de empleados</h1>
+    </header>
+
+<table class="Tblempleados">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>Fecha de nacimiento</th>
+            <th>Telefono</th>
+            <th>Puesto</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @for (empleado of empleados; track empleado.personalID) {
+            <tr>
+                <td>{{empleado.personalID}}</td>
+                <td>{{empleado.Nombre}}</td>
+                <td>{{empleado.Apellidos}}</td>
+                <td>{{empleado.Fnacimiento}}</td>
+                <td>{{empleado.Telefono}}</td>
+                <td>{{empleado.NombrePuesto}}</td>
+            </tr>
+        } @empty {
+            <tr>
+                <td colspan="7">No hay empleados registrados</td>
+            </tr>
+        }
+    </tbody>
+</table>
+</div>
+

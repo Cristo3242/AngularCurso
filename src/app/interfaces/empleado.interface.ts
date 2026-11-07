@@ -5,4 +5,6 @@ export interface empleado {
     Apellidos: string,
     Fnacimiento: string,
     Telefono: string
+    NombrePuesto: string
+
 }
