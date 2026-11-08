@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms'; // permite utilizar [(ngModel)] para relacionar campos del formulario con propiedades de TS
 import { empleado } from '../../interfaces/empleado.interface';
 import { Puesto } from '../../interfaces/puesto.interface';
 
@@ -39,6 +39,7 @@ export class EmpleadosComponent {
   }
 ];
 
+// creo las propiedades del formulario para capturar registros
   nombre: string = '';
   apellidos: string = '';
   fnacimiento: string = '';

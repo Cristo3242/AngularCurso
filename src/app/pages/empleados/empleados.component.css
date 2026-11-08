@@ -41,3 +41,62 @@
 .tblempleados tbody tr:hover {
     background-color: #f1f5f9;
 }
+
+/* Formulario de registro */
+
+.empleado-form {
+    background-color: white;
+    padding: 25px;
+    margin-bottom: 50px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #334155;
+}
+
+.form-group input,
+.form-group select {
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 15px;
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+.btn-save {
+    margin-top: 20px;
+    padding: 12px 20px;
+    background-color: #139211;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-save:hover {
+    background-color: #065f27;
+}
+
+@media (max-width: 650px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}

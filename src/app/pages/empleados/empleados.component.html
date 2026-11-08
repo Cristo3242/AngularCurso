@@ -3,21 +3,65 @@
         <h1>Gestion y visualizacion de empleados</h1>
     </header>
 
-<table class="tblempleados">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Apellidos</th>
-            <th>Fecha de nacimiento</th>
-            <th>Telefono</th>
-            <th>Puesto</th>
-            <th></th>
-        </tr>
-    </thead>
+    <section class="empleado-form">
+        <h2>Registro de empleados</h2>
 
-    <tbody>
-        @for (empleado of empleados; track empleado.personalID) {
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" [(ngModel)]="nombre" />
+            </div>
+
+            <div class="form-group">
+                <label>Apellidos</label>
+                <input type="text" [(ngModel)]="apellidos" />
+            </div>
+
+            <div class="form-group">
+                <label>Fecha de Nacimiento</label>
+                <input type="date" [(ngModel)]="fnacimiento" />
+            </div>
+
+            <div class="form-group">
+                <label>Telefono</label>
+                <input type="text" [(ngModel)]="telefono" />
+            </div>
+
+            <div class="form-group">
+                <label>Puesto</label>
+
+                <select [(ngModel)]="puestoID">
+                    <option [ngValue]="0">Selecciona el puesto</option>
+
+                    @for (puesto of puestos; track puesto.PuestoID) {
+                    <option [ngValue]="puesto.PuestoID">
+                        {{puesto.NombrePuesto}}
+                    </option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <button type="button" class="btn-save">
+                Guardar
+            </button>
+    </section>
+
+    <table class="tblempleados">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Fecha de nacimiento</th>
+                <th>Telefono</th>
+                <th>Puesto</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @for (empleado of empleados; track empleado.personalID) {
             <tr>
                 <td>{{empleado.personalID}}</td>
                 <td>{{empleado.Nombre}}</td>
@@ -26,12 +70,11 @@
                 <td>{{empleado.Telefono}}</td>
                 <td>{{empleado.NombrePuesto}}</td>
             </tr>
-        } @empty {
+            } @empty {
             <tr>
                 <td colspan="7">No hay empleados registrados</td>
             </tr>
-        }
-    </tbody>
-</table>
+            }
+        </tbody>
+    </table>
 </div>
-
