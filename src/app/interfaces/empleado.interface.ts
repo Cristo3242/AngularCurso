@@ -6,5 +6,4 @@ export interface empleado {
     Fnacimiento: string,
     Telefono: string
     NombrePuesto: string
-
 }

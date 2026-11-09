@@ -1,7 +1,6 @@
 
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
 import { empleado } from '../../interfaces/empleado.interface';
 import { Puesto } from '../../interfaces/puesto.interface';
 import { EmpleadosService } from '../../services/empleados.service';
@@ -13,15 +12,14 @@ import { EmpleadosService } from '../../services/empleados.service';
   templateUrl: './empleados.component.html',
   styleUrl: './empleados.component.css'
 })
+
 export class EmpleadosComponent implements OnInit {
 
   empleadoEditado: number | null = null;
 
-  
   puestos: Puesto[] = [];
   empleados: empleado[] = [];
 
-  
   nombre: string = '';
   apellidos: string = '';
   fnacimiento: string = '';
@@ -30,7 +28,6 @@ export class EmpleadosComponent implements OnInit {
 
   constructor(private empleadosService: EmpleadosService) {}
 
-  
   ngOnInit() {
     this.cargarEmpleados();
     this.cargarPuestos();
