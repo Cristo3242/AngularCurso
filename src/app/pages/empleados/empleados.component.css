@@ -22,8 +22,9 @@
     width: 100%;
     border-collapse: collapse;
     background-color: white;
-    border-radius: 10px;
+    border: 3px solid #e2e8f0;
     overflow: hidden;
+    text-align: center;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
@@ -48,8 +49,8 @@
     background-color: white;
     padding: 25px;
     margin-bottom: 50px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 3px solid #e2e8f0; 
+    border-radius: 10px;
 }
 
 .form-grid {
