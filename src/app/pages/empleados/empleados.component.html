@@ -9,17 +9,17 @@
         <div class="form-grid">
             <div class="form-group">
                 <label>Nombre</label>
-                <input type="text" [(ngModel)]="nombre" />
+                <input type="text" [(ngModel)]="nombre" required/>
             </div>
 
             <div class="form-group">
                 <label>Apellidos</label>
-                <input type="text" [(ngModel)]="apellidos" />
+                <input type="text" [(ngModel)]="apellidos" required/>
             </div>
 
             <div class="form-group">
                 <label>Fecha de Nacimiento</label>
-                <input type="date" [(ngModel)]="fnacimiento" />
+                <input type="date" [(ngModel)]="fnacimiento" required/>
             </div>
 
             <div class="form-group">
@@ -42,9 +42,20 @@
             </div>
         </div>
 
-        <button type="button" class="btn-save">
-                Guardar
-            </button>
+        <button type="button" class="btn-save" (click)="guardarEmpleado()" >
+                {{ empleadoEditado === null ? 'Guardar' : 'Actualizar'}}
+        </button>
+       
+@if (empleadoEditado !== null) {
+    <button
+        type="button"
+        class="btn-cancel"
+        (click)="limpiarFormulario()">
+        Cancelar
+    </button>
+}
+
+
     </section>
 
     <table class="tblempleados">
@@ -56,7 +67,6 @@
                 <th>Fecha de nacimiento</th>
                 <th>Telefono</th>
                 <th>Puesto</th>
-                <th></th>
             </tr>
         </thead>
 
@@ -69,6 +79,12 @@
                 <td>{{empleado.Fnacimiento}}</td>
                 <td>{{empleado.Telefono}}</td>
                 <td>{{empleado.NombrePuesto}}</td>
+
+                <td>
+                    <button class="btn-edit" (click)="editarEmpleado(empleado)">Editar</button>
+
+                    <button class="btn-delete" (click)="eliminarEmpleado(empleado.personalID)">Eliminar</button>
+                </td>
             </tr>
             } @empty {
             <tr>
