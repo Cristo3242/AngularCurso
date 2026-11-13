@@ -1,0 +1,195 @@
+
+<div class="detalle-container">
+
+  <header class="detalle-header">
+    <h1>Expediente del empleado</h1>
+
+    <button type="button" (click)="volver()">
+      Volver
+    </button>
+  </header>
+
+  @if (cargando) {
+    <p class="estado">Cargando expediente...</p>
+
+  } @else if (mensajeError) {
+    <p class="mensaje-error">{{ mensajeError }}</p>
+
+  } @else if (empleado) {
+
+    <section class="detalle-card">
+
+      <!-- ENCABEZADO CON FOTO PEQUEÑA -->
+
+      <div class="perfil-empleado">
+
+        <div class="foto-contenedor">
+
+          @if (fotoDisponible) {
+            <img
+              [src]="obtenerUrlFoto()"
+              (error)="fotoDisponible = false"
+              alt="Fotografía del empleado"
+              class="foto-expediente"
+            />
+          } @else {
+            <div class="sin-foto">
+              Sin foto
+            </div>
+          }
+
+        </div>
+
+        <div class="perfil-informacion">
+
+          <h2>
+            {{ empleado.Nombre }} {{ empleado.Apellidos }}
+          </h2>
+
+          <p class="perfil-puesto">
+            {{ empleado.NombrePuesto }}
+          </p>
+
+          <p class="perfil-nomina">
+            Nómina: {{ empleado.Nomina }}
+          </p>
+
+          @if (fotoDisponible) {
+            <button
+              type="button"
+              class="btn-eliminar-foto"
+              [disabled]="eliminandoFoto"
+              (click)="solicitarEliminarFoto()">
+              Eliminar foto
+            </button>
+          }
+
+        </div>
+
+      </div>
+
+      <!-- INFORMACIÓN DEL EMPLEADO -->
+
+      <h3 class="seccion-titulo">
+        Información personal
+      </h3>
+
+      <div class="detalle-grid">
+
+        <div>
+          <strong>ID de personal</strong>
+          <p>{{ empleado.personalID }}</p>
+        </div>
+
+        <div>
+          <strong>No. de Nómina</strong>
+          <p>{{ empleado.Nomina }}</p>
+        </div>
+
+        <div>
+          <strong>Nombre</strong>
+          <p>{{ empleado.Nombre }}</p>
+        </div>
+
+        <div>
+          <strong>Apellidos</strong>
+          <p>{{ empleado.Apellidos }}</p>
+        </div>
+
+        <div>
+          <strong>Fecha de nacimiento</strong>
+          <p>{{ empleado.Fnacimiento }}</p>
+        </div>
+
+        <div>
+          <strong>Teléfono</strong>
+          <p>{{ empleado.Telefono }}</p>
+        </div>
+
+        <div>
+          <strong>Número de contacto</strong>
+          <p>{{ empleado.NumeroContacto }}</p>
+        </div>
+
+        <div>
+          <strong>Domicilio</strong>
+          <p>{{ empleado.Domicilio }}</p>
+        </div>
+
+        <div>
+          <strong>ID de puesto</strong>
+          <p>{{ empleado.PuestoID }}</p>
+        </div>
+
+        <div>
+          <strong>Puesto</strong>
+          <p>{{ empleado.NombrePuesto }}</p>
+        </div>
+
+      </div>
+
+    </section>
+  }
+
+
+  @if (confirmarEliminarFoto) {
+
+    <div class="modal-fondo">
+
+      <div
+        class="modal-confirmacion"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tituloEliminarFoto"
+      >
+
+        <h3 id="tituloEliminarFoto">
+          ¿Eliminar fotografía?
+        </h3>
+
+        <p>
+          La fotografía se eliminará del expediente.
+          Los datos del empleado se conservarán.
+        </p>
+
+        <div class="modal-acciones">
+
+          <button
+            type="button"
+            class="btn-cancelar"
+            [disabled]="eliminandoFoto"
+            (click)="cancelarEliminarFoto()">
+            Cancelar
+          </button>
+
+          <button
+            type="button"
+            class="btn-confirmar-eliminar"
+            [disabled]="eliminandoFoto"
+            (click)="eliminarFoto()">
+            {{ eliminandoFoto ? 'Eliminando...' : 'Sí, eliminar' }}
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+  }
+
+
+  @if (mensajeToast) {
+
+    <div
+      class="toast"
+      [class.toast-exito]="tipoToast === 'exito'"
+      [class.toast-error]="tipoToast === 'error'"
+      role="status"
+      aria-live="polite"
+    >
+      {{ mensajeToast }}
+    </div>
+
+  }
+
+</div>
