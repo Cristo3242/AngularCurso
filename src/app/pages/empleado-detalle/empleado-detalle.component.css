@@ -1,78 +1,66 @@
 
-/* CONTENEDOR PRINCIPAL */
-
 .detalle-container {
-  max-width: 1100px;
-  margin: 35px auto;
-  padding: 25px;
+  max-width: 1050px;
+  margin: 30px auto;
+  padding: 20px;
   font-family: 'Segoe UI', Arial, sans-serif;
   color: #1e293b;
 }
 
-/* ENCABEZADO GENERAL */
+/* ENCABEZADO */
 
 .detalle-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 20px;
-  flex-wrap: wrap;
-  margin-bottom: 25px;
+  gap: 15px;
+  margin-bottom: 24px;
 }
 
 .detalle-header h1 {
   margin: 0;
-  font-size: 28px;
+  font-size: 27px;
   color: #0f172a;
 }
 
 .detalle-header button {
-  padding: 11px 20px;
-  background-color: #2563eb;
-  color: white;
-  border: none;
+  padding: 10px 16px;
+  border: 0;
   border-radius: 8px;
-  font-size: 14px;
+  background: #2563eb;
+  color: white;
   font-weight: 600;
   cursor: pointer;
 }
 
-.detalle-header button:hover {
-  background-color: #1d4ed8;
-}
-
-/* TARJETA PRINCIPAL */
+/* TARJETA */
 
 .detalle-card {
-  background-color: #ffffff;
-  padding: 30px;
+  padding: 27px;
+  background: white;
   border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px #0000000c;
 }
 
 /* PERFIL SUPERIOR */
 
 .perfil-empleado {
   display: flex;
-  align-items: center;
-  gap: 25px;
-  padding-bottom: 25px;
+  align-items: flex-start;
+  gap: 23px;
+  padding-bottom: 23px;
   border-bottom: 1px solid #e2e8f0;
 }
 
-/* FOTO PEQUEÑA */
-
 .foto-contenedor {
+  flex-shrink: 0;
   width: 110px;
   height: 130px;
-  flex-shrink: 0;
-
+  overflow: hidden;
+  background: #f1f5f9;
   border: 1px solid #cbd5e1;
   border-radius: 10px;
-  overflow: hidden;
-
-  background-color: #f1f5f9;
 }
 
 .foto-expediente {
@@ -86,215 +74,210 @@
   display: flex;
   justify-content: center;
   align-items: center;
-
   width: 100%;
   height: 100%;
-
-  color: #64748b;
-  font-size: 13px;
-  text-align: center;
-  padding: 10px;
+  padding: 9px;
   box-sizing: border-box;
+  color: #64748b;
+  text-align: center;
+  font-size: 12px;
 }
 
-/* NOMBRE Y PUESTO */
-
 .perfil-informacion {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 9px;
+  flex: 1;
   min-width: 0;
 }
 
 .perfil-informacion h2 {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 700;
+  margin: 0 0 8px;
+  font-size: 23px;
   color: #0f172a;
 }
 
-.perfil-puesto {
-  margin: 0;
-  color: #64748b;
-  font-size: 15px;
-}
-
+.perfil-puesto,
 .perfil-nomina {
-  margin: 0;
+  margin: 0 0 7px;
+  color: #475569;
   font-size: 14px;
-  color: #334155;
-  font-weight: 600;
 }
 
-/* BOTÓN ELIMINAR FOTO */
+.estado {
+  display: inline-block;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 5px 9px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 12px;
+}
 
-.btn-eliminar-foto {
-  margin-top: 5px;
-  padding: 9px 14px;
+.estado.activo {
+  background: #dcfce7;
+  color: #166534;
+}
 
-  background-color: #fee2e2;
-  color: #b91c1c;
-  border: 1px solid #fecaca;
-  border-radius: 8px;
+/* FOTOGRAFÍA */
 
+.acciones-foto {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin: 10px 0;
+}
+
+.btn-subir-foto,
+.btn-eliminar-foto,
+.btn-cancelar,
+.btn-guardar-foto {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 13px;
+  border-radius: 7px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
 }
 
-.btn-eliminar-foto:hover:not(:disabled) {
-  background-color: #fecaca;
+.btn-subir-foto {
+  position: relative;
+  overflow: hidden;
+  background: #dbeafe;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
 }
 
-.btn-eliminar-foto:disabled {
+.btn-subir-foto input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.btn-eliminar-foto {
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+}
+
+.btn-guardar-foto {
+  background: #2563eb;
+  border: 0;
+  color: white;
+}
+
+.btn-cancelar {
+  border: 0;
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.archivo {
+  font-size: 12px;
+  color: #475569;
+  overflow-wrap: anywhere;
+}
+
+button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
 /* DATOS */
 
-.seccion-titulo {
-  margin: 26px 0 20px;
+.detalle-card h3 {
   font-size: 18px;
   color: #334155;
+  margin: 23px 0 16px;
 }
 
 .detalle-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: 15px;
 }
 
 .detalle-grid > div {
-  background-color: #f8fafc;
-  border: 1px solid #f1f5f9;
-  border-radius: 10px;
-  padding: 16px;
+  padding: 15px;
+  border-radius: 8px;
+  background: #f8fafc;
 }
 
 .detalle-grid strong {
   display: block;
+  font-size: 12px;
   color: #64748b;
-  font-size: 13px;
-  margin-bottom: 8px;
+  margin-bottom: 7px;
 }
 
 .detalle-grid p {
   margin: 0;
-  font-size: 15px;
-  color: #0f172a;
-  line-height: 1.5;
+  font-size: 14px;
   overflow-wrap: anywhere;
 }
 
-/* ERRORES */
-
 .mensaje-error {
   color: #dc2626;
-  font-size: 14px;
 }
 
-.estado {
-  color: #64748b;
-  font-size: 15px;
-}
-
-/* VENTANA DE CONFIRMACIÓN */
+/* MODAL */
 
 .modal-fondo {
   position: fixed;
   inset: 0;
   z-index: 1000;
-
+  background: #0f172a99;
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding: 20px;
-  background-color: rgba(15, 23, 42, 0.55);
 }
 
-.modal-confirmacion {
+.modal {
+  max-width: 400px;
   width: 100%;
-  max-width: 420px;
-  box-sizing: border-box;
-
-  padding: 28px;
-  background-color: white;
-  border-radius: 14px;
-  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.2);
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 15px 45px #0003;
 }
 
-.modal-confirmacion h3 {
-  margin: 0 0 12px;
-  font-size: 21px;
-  color: #0f172a;
-}
-
-.modal-confirmacion p {
-  margin: 0 0 24px;
-  font-size: 14px;
+.modal p {
   color: #64748b;
-  line-height: 1.6;
 }
 
 .modal-acciones {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
+  gap: 10px;
 }
 
-.btn-cancelar,
-.btn-confirmar-eliminar {
-  padding: 10px 16px;
-  border: none;
+.modal-acciones button {
+  padding: 10px 14px;
   border-radius: 8px;
-  font-weight: 600;
+  border: 0;
   cursor: pointer;
 }
 
-.btn-cancelar {
-  background-color: #e2e8f0;
-  color: #334155;
-}
-
-.btn-confirmar-eliminar {
-  background-color: #dc2626;
-  color: white;
-}
-
-.btn-confirmar-eliminar:hover:not(:disabled) {
-  background-color: #b91c1c;
-}
-
-.modal-acciones button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* NOTIFICACIÓN TEMPORAL */
+/* TOAST */
 
 .toast {
   position: fixed;
-  top: 24px;
-  right: 24px;
+  top: 23px;
+  right: 23px;
   z-index: 1100;
-
-  max-width: min(400px, calc(100vw - 48px));
-  padding: 15px 20px;
-
-  background-color: white;
-  color: #1e293b;
+  max-width: min(400px, calc(100vw - 44px));
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  background: white;
   border: 1px solid #e2e8f0;
   border-left: 5px solid;
-  border-radius: 10px;
-
-  font-size: 14px;
-  font-weight: 500;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-
-  animation: aparecerToast 0.25s ease-out;
+  padding: 15px 18px;
+  border-radius: 9px;
+  box-shadow: 0 9px 25px #0002;
 }
 
 .toast-exito {
@@ -305,38 +288,28 @@
   border-left-color: #dc2626;
 }
 
-@keyframes aparecerToast {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.toast button {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-size: 21px;
 }
 
-/* RESPONSIVO */
-
 @media (max-width: 650px) {
-
   .detalle-container {
-    margin: 15px auto;
-    padding: 15px;
-  }
-
-  .detalle-header h1 {
-    font-size: 23px;
+    padding: 12px;
   }
 
   .detalle-card {
-    padding: 18px;
+    padding: 16px;
   }
 
-  .perfil-empleado {
-    align-items: flex-start;
-    gap: 15px;
+  .detalle-header h1 {
+    font-size: 21px;
+  }
+
+  .detalle-grid {
+    grid-template-columns: 1fr;
   }
 
   .foto-contenedor {
@@ -344,15 +317,11 @@
     height: 105px;
   }
 
+  .perfil-empleado {
+    gap: 13px;
+  }
+
   .perfil-informacion h2 {
-    font-size: 19px;
-  }
-
-  .detalle-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .modal-confirmacion {
-    padding: 22px;
+    font-size: 18px;
   }
 }

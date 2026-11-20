@@ -23,28 +23,33 @@ import { EmpleadosService } from '../../services/empleados.service';
   templateUrl: './empleado-detalle.component.html',
   styleUrl: './empleado-detalle.component.css'
 })
-export class EmpleadoDetalleComponent implements OnInit, OnDestroy {
-
-  empleado: empleado | null = null;
-
-  cargando: boolean = true;
-  mensajeError: string = '';
-
-  // Fotografía
-  fotoDisponible: boolean = true;
-  confirmarEliminarFoto: boolean = false;
-  eliminandoFoto: boolean = false;
-
-  // Notificación temporal
-  mensajeToast: string = '';
-  tipoToast: 'exito' | 'error' = 'exito';
-
-  private temporizadorToast:
-    ReturnType<typeof setTimeout> | null = null;
+export class EmpleadoDetalleComponent
+  implements OnInit, OnDestroy {
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private empleadosService = inject(EmpleadosService);
+  private servicio = inject(EmpleadosService);
+
+  empleado: empleado | null = null;
+
+  cargando = true;
+  mensajeError = '';
+
+  fotoDisponible = true;
+  versionFoto = 0;
+
+  fotoSeleccionada: File | null = null;
+  vistaPreviaFoto: string | null = null;
+
+  subiendoFoto = false;
+  confirmarEliminarFoto = false;
+  eliminandoFoto = false;
+
+  mensajeToast = '';
+  tipoToast: 'exito' | 'error' = 'exito';
+
+  private temporizador:
+    ReturnType<typeof setTimeout> | null = null;
 
   ngOnInit(): void {
     const id = Number(
@@ -53,60 +58,154 @@ export class EmpleadoDetalleComponent implements OnInit, OnDestroy {
 
     if (!Number.isInteger(id) || id <= 0) {
       this.cargando = false;
-      this.mensajeError = 'El ID del empleado no es válido.';
+      this.mensajeError = 'ID inválido.';
       return;
     }
 
-    this.empleadosService.obtenerEmpleadoPorId(id).subscribe({
+    this.servicio.obtenerEmpleadoPorId(id).subscribe({
 
       next: (datos: empleado) => {
         this.empleado = datos;
-        this.fotoDisponible = true;
         this.cargando = false;
       },
 
       error: (error: HttpErrorResponse) => {
-        console.error('Error al cargar empleado:', error);
+        console.error('Error al cargar expediente:', error);
 
         this.mensajeError =
-          'No se pudo consultar el expediente.';
+          error.error?.mensaje ||
+          'No se pudo cargar el expediente.';
 
         this.cargando = false;
       }
-
     });
   }
 
-  // Obtener la fotografía desde Express
+  // URL CON VERSIÓN PARA EVITAR CACHÉ
+
   obtenerUrlFoto(): string {
     if (!this.empleado) {
       return '';
     }
 
-    return this.empleadosService.obtenerUrlFoto(
+    return `${this.servicio.obtenerUrlFoto(
       this.empleado.personalID
-    );
+    )}?v=${this.versionFoto}`;
   }
 
-  // Abro confirmación
+  // SELECCIONAR FOTO
+
+  seleccionarFoto(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const archivo = input.files?.[0];
+
+    if (!archivo) return;
+
+    if (
+      !['image/jpeg', 'image/png'].includes(archivo.type) ||
+      archivo.size > 3 * 1024 * 1024
+    ) {
+      this.mostrarToast(
+        'Solo JPG o PNG, máximo 3 MB.',
+        'error'
+      );
+
+      input.value = '';
+      return;
+    }
+
+    this.fotoSeleccionada = archivo;
+    this.vistaPreviaFoto = null;
+
+    const lector = new FileReader();
+
+    lector.onload = () => {
+      if (
+        this.fotoSeleccionada === archivo &&
+        typeof lector.result === 'string'
+      ) {
+        this.vistaPreviaFoto = lector.result;
+      }
+    };
+
+    lector.readAsDataURL(archivo);
+
+    // Permite seleccionar nuevamente el mismo archivo
+    input.value = '';
+  }
+
+  cancelarSeleccionFoto(): void {
+    if (this.subiendoFoto) return;
+
+    this.fotoSeleccionada = null;
+    this.vistaPreviaFoto = null;
+  }
+
+  // GUARDAR FOTO
+
+  guardarFoto(): void {
+    if (
+      !this.empleado ||
+      !this.fotoSeleccionada ||
+      this.subiendoFoto
+    ) {
+      return;
+    }
+
+    this.subiendoFoto = true;
+
+    this.servicio.subirFoto(
+      this.empleado.personalID,
+      this.fotoSeleccionada
+    ).subscribe({
+
+      next: () => {
+        this.subiendoFoto = false;
+
+        this.fotoSeleccionada = null;
+        this.vistaPreviaFoto = null;
+
+        this.versionFoto++;
+        this.fotoDisponible = true;
+
+        this.mostrarToast(
+          'Fotografía guardada correctamente.'
+        );
+      },
+
+      error: (error: HttpErrorResponse) => {
+        this.subiendoFoto = false;
+
+        console.error('Error al subir foto:', error);
+
+        this.mostrarToast(
+          error.error?.mensaje ||
+          'No se pudo subir la fotografía.',
+          'error'
+        );
+      }
+    });
+  }
+
+  // CONFIRMACIÓN DE ELIMINACIÓN
+
   solicitarEliminarFoto(): void {
-    if (!this.empleado || !this.fotoDisponible) {
-      return;
+    if (
+      this.fotoDisponible &&
+      !this.subiendoFoto
+    ) {
+      this.confirmarEliminarFoto = true;
     }
-
-    this.confirmarEliminarFoto = true;
   }
 
-  // Cancelo eliminación
   cancelarEliminarFoto(): void {
-    if (this.eliminandoFoto) {
-      return;
+    if (!this.eliminandoFoto) {
+      this.confirmarEliminarFoto = false;
     }
-
-    this.confirmarEliminarFoto = false;
   }
 
-  // Elimino únicamente la fotografía
+  // ELIMINAR FOTO
+
   eliminarFoto(): void {
     if (!this.empleado || this.eliminandoFoto) {
       return;
@@ -114,52 +213,64 @@ export class EmpleadoDetalleComponent implements OnInit, OnDestroy {
 
     this.eliminandoFoto = true;
 
-    this.empleadosService
-      .eliminarFoto(this.empleado.personalID)
-      .subscribe({
+    this.servicio.eliminarFoto(
+      this.empleado.personalID
+    ).subscribe({
 
-        next: () => {
-          this.fotoDisponible = false;
-          this.confirmarEliminarFoto = false;
-          this.eliminandoFoto = false;
+      next: () => {
+        this.fotoDisponible = false;
+        this.eliminandoFoto = false;
+        this.confirmarEliminarFoto = false;
 
-          this.mostrarToast(
-            'Fotografía eliminada correctamente.',
-            'exito'
-          );
-        },
+        this.cancelarSeleccionFoto();
 
-        error: (error: HttpErrorResponse) => {
-  console.error('Error al eliminar foto:', error);
+        this.mostrarToast(
+          'Fotografía eliminada correctamente.'
+        );
+      },
 
-  this.eliminandoFoto = false;
-  this.confirmarEliminarFoto = false;
+      error: (error: HttpErrorResponse) => {
+        this.eliminandoFoto = false;
+        this.confirmarEliminarFoto = false;
 
-  this.mostrarToast(
-    error.error?.mensaje || 'No se pudo eliminar la fotografía.',
-    'error'
-  );
-}
-      });
+        console.error('Error al eliminar foto:', error);
+
+        this.mostrarToast(
+          error.error?.mensaje ||
+          `Error HTTP ${error.status} al eliminar foto.`,
+          'error'
+        );
+      }
+    });
   }
 
-  // Mensaje 
+  // NOTIFICACIONES TEMPORALES
+
   mostrarToast(
     mensaje: string,
-    tipo: 'exito' | 'error'
+    tipo: 'exito' | 'error' = 'exito'
   ): void {
-
-    if (this.temporizadorToast !== null) {
-      clearTimeout(this.temporizadorToast);
+    if (this.temporizador !== null) {
+      clearTimeout(this.temporizador);
     }
 
     this.mensajeToast = mensaje;
     this.tipoToast = tipo;
 
-    this.temporizadorToast = setTimeout(() => {
+    this.temporizador = setTimeout(() => {
       this.mensajeToast = '';
-      this.temporizadorToast = null;
+      this.temporizador = null;
     }, 3500);
+  }
+
+  cerrarToast(): void {
+    this.mensajeToast = '';
+
+    if (this.temporizador !== null) {
+      clearTimeout(this.temporizador);
+    }
+
+    this.temporizador = null;
   }
 
   volver(): void {
@@ -167,8 +278,8 @@ export class EmpleadoDetalleComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.temporizadorToast !== null) {
-      clearTimeout(this.temporizadorToast);
+    if (this.temporizador !== null) {
+      clearTimeout(this.temporizador);
     }
   }
 }

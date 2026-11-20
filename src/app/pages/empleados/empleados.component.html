@@ -1,181 +1,487 @@
 <div class="empleados-container">
+
   <header class="page-header">
-    <h1>Gestión y visualización de empleados</h1>
-    <button type="button" class="btn-save" (click)="nuevoEmpleado()" [disabled]="guardando">+ Nuevo</button>
+    <div>
+      <h1>Gestión de personal</h1>
+      <p>Administración de altas, bajas y expedientes</p>
+    </div>
+
+    <button type="button" class="btn-save" (click)="nuevoEmpleado()" [disabled]="guardando">
+      + Nuevo empleado
+    </button>
   </header>
 
+  <!-- FORMULARIO -->
+
   @if (mostrarFormulario) {
-    <section class="empleado-form">
-      <h2>{{ empleadoEditado === null ? 'Registro de empleados' : 'Editar empleado' }}</h2>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Nombre</label>
-          <input type="text" [(ngModel)]="nombre" maxlength="100" required />
-        </div>
-        <div class="form-group">
-          <label>Apellidos</label>
-          <input type="text" [(ngModel)]="apellidos" maxlength="100" required />
-        </div>
-        <div class="form-group">
-          <label>Fecha de nacimiento</label>
-          <input type="date" [(ngModel)]="fnacimiento" min="1900-01-01" [max]="fechaMaxima"
-            (ngModelChange)="validarFecha()" [class.campo-error]="errorFecha" required />
-          @if (errorFecha) {
-            <small class="mensaje-error">{{ mensajeErrorFecha }}</small>
-          }
-        </div>
-        <div class="form-group">
-          <label>Domicilio</label>
-          <input type="text" [(ngModel)]="domicilio" maxlength="50" required />
-        </div>
-        <div class="form-group">
-          <label>Teléfono</label>
-          <input type="text" inputmode="numeric" maxlength="10" [ngModel]="telefono"
-            (input)="validarTelefono($event)" [class.campo-error]="errorTelefono" required />
-          @if (errorTelefono) {
-            <small class="mensaje-error">Solo se permiten números en este campo.</small>
-          }
-        </div>
-        <div class="form-group">
-          <label>Número de contacto</label>
-          <input type="text" inputmode="numeric" maxlength="10" [ngModel]="numeroContacto"
-            (input)="validarNumeroContacto($event)" [class.campo-error]="errorNumeroContacto" required />
-          @if (errorNumeroContacto) {
-            <small class="mensaje-error">Solo se permiten números en este campo.</small>
-          }
-        </div>
-        <div class="form-group">
-          <label>No. de Nómina</label>
-          <input type="text" [(ngModel)]="nomina" maxlength="30" required />
-        </div>
-        <div class="form-group">
-          <label>Puesto</label>
-          <select [(ngModel)]="puestoID" required>
-            <option [ngValue]="0">Selecciona el puesto</option>
-            @for (puesto of puestos; track puesto.PuestoID) {
-              <option [ngValue]="puesto.PuestoID">{{ puesto.NombrePuesto }}</option>
-            }
-          </select>
-        </div>
-        <div class="form-group foto-form-group">
-          <label>Fotografía del empleado (opcional)</label>
-          <input type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png"
-            (change)="seleccionarFoto($event)" [disabled]="guardando" />
-          <small>JPG o PNG, hasta 3 MB.</small>
-          @if (vistaPreviaFoto) {
-            <div class="foto-preview">
-              <img [src]="vistaPreviaFoto" alt="Vista previa de la fotografía" />
-            </div>
-          } @else if (empleadoEditado !== null && fotoActualDisponible) {
-            <div class="foto-preview">
-              <img [src]="obtenerUrlFoto(empleadoEditado)" alt="Fotografía actual del empleado"
-                (error)="fotoActualDisponible = false" />
-            </div>
-          }
-        </div>
-      </div>
-
-      <div class="form-actions">
-        <button type="button" class="btn-save" (click)="guardarEmpleado()" [disabled]="guardando">
-          {{ guardando ? 'Guardando...' : (empleadoEditado === null ? 'Guardar' : 'Actualizar') }}
-        </button>
-        <button type="button" class="btn-cancel" (click)="cancelarFormulario()" [disabled]="guardando">Cancelar</button>
-      </div>
-    </section>
-  }
-
   <section class="empleado-form">
-    <h2>Filtros de empleados</h2>
+
+    <h2>
+      {{ empleadoEditado === null
+      ? 'Registrar empleado'
+      : 'Editar empleado' }}
+    </h2>
+
     <div class="form-grid">
+
       <div class="form-group">
-        <label>Buscar por nombre o nómina</label>
-        <input type="text" [(ngModel)]="filtroBusqueda" (ngModelChange)="aplicarBusqueda()"
-          placeholder="Buscar empleado..." />
+        <label>Nombre</label>
+        <input type="text" [(ngModel)]="nombre" maxlength="100" />
       </div>
+
       <div class="form-group">
-        <label>Filtrar por puesto</label>
-        <select [(ngModel)]="filtroPuesto" (ngModelChange)="aplicarFiltros()">
-          <option [ngValue]="0">Todos los puestos</option>
-          @for (puesto of puestos; track puesto.PuestoID) {
-            <option [ngValue]="puesto.PuestoID">{{ puesto.NombrePuesto }}</option>
+        <label>Apellidos</label>
+        <input type="text" [(ngModel)]="apellidos" maxlength="100" />
+      </div>
+
+      <div class="form-group">
+        <label>Fecha de nacimiento</label>
+
+        <input type="date" [(ngModel)]="fnacimiento" min="1900-01-01" [max]="fechaMaxima"
+          (ngModelChange)="validarFecha()" [class.campo-error]="errorFecha" />
+
+        @if (errorFecha) {
+        <small class="mensaje-error">
+          {{ mensajeErrorFecha }}
+        </small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label>Domicilio</label>
+        <input type="text" [(ngModel)]="domicilio" maxlength="50" />
+      </div>
+
+      <div class="form-group">
+        <label>Teléfono</label>
+
+        <input type="text" inputmode="numeric" maxlength="10" [ngModel]="telefono" (input)="validarTelefono($event)" />
+
+        @if (errorTelefono) {
+        <small class="mensaje-error">
+          Solo se permiten números
+        </small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label>Número de contacto</label>
+
+        <input type="text" inputmode="numeric" maxlength="10" [ngModel]="numeroContacto"
+          (input)="validarNumeroContacto($event)" />
+
+        @if (errorNumeroContacto) {
+        <small class="mensaje-error">
+          Solo se permiten números
+        </small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label>No. de Nómina</label>
+        <input type="text" [(ngModel)]="nomina" maxlength="4" minlength="4" pattern="[0-9]{4}" placeholder="Ej. 1234"
+          required />
+
+        <small>El número de nómina debe contener 4 dígitos</small>
+      </div>
+
+      <div class="form-group">
+        <label>Puesto / área</label>
+
+        <select [(ngModel)]="puestoID">
+          <option [ngValue]="0">
+            Selecciona un puesto
+          </option>
+
+          @for (p of puestos; track p.PuestoID) {
+          @if (
+          p.Activo ||
+          (
+          empleadoEditado !== null &&
+          p.PuestoID === puestoID
+          )
+          ) {
+          <option [ngValue]="p.PuestoID">
+            {{ p.NombrePuesto }}
+            {{ p.Activo ? '' : '(inactivo)' }}
+          </option>
+          }
           }
         </select>
       </div>
+
+      <div class="form-group foto-form-group">
+        <label>Fotografía</label>
+
+        <input type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png" (change)="seleccionarFoto($event)"
+          [disabled]="guardando" />
+
+        <small>JPG o PNG · Máximo 3 MB</small>
+
+        @if (vistaPreviaFoto) {
+        <div class="foto-preview">
+          <img [src]="vistaPreviaFoto" alt="Fotografía seleccionada" />
+        </div>
+
+        } @else if (
+        empleadoEditado !== null &&
+        fotoActualDisponible
+        ) {
+        <div class="foto-preview">
+          <img [src]="obtenerUrlFoto(empleadoEditado)" (error)="fotoActualDisponible = false" alt="Fotografía actual" />
+        </div>
+        }
+      </div>
+
     </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-save" (click)="guardarEmpleado()" [disabled]="guardando">
+        {{ guardando ? 'Guardando...' : 'Guardar' }}
+      </button>
+
+      <button type="button" class="btn-cancel" (click)="cancelarFormulario()" [disabled]="guardando">
+        Cancelar
+      </button>
+    </div>
+
+  </section>
+  }
+
+  <!-- INDICADORES -->
+
+  <section class="indicadores" aria-label="Indicadores de personal">
+
+    <article class="indicador">
+      <span>Áreas totales</span>
+      <strong>
+        {{ estadisticas?.areasTotal ?? '—' }}
+      </strong>
+    </article>
+
+    <article class="indicador">
+      <span>Personal activo</span>
+      <strong>
+        {{ estadisticas?.personalActivo ?? '—' }}
+      </strong>
+    </article>
+
+    <article class="indicador">
+      <span>Personal inactivo</span>
+      <strong>
+        {{ estadisticas?.personalInactivo ?? '—' }}
+      </strong>
+    </article>
+
+    <article class="indicador">
+      <span>Bajas históricas</span>
+      <strong>
+        {{ estadisticas?.cantidadBajas ?? '—' }}
+      </strong>
+    </article>
+
   </section>
 
-  <div class="tabla-contenedor">
-    <table class="tblempleados">
-      <thead>
-        <tr>
-          <th>No. de Nómina</th>
-          <th>Nombre completo</th>
-          <th>Puesto</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (e of empleados; track e.personalID) {
+  <!-- TABLA Y FILTROS -->
+
+  <section class="tabla-panel">
+
+    <header class="tabla-titulo">
+      <h2>Lista de empleados</h2>
+
+      <button type="button" class="btn-filtros" (click)="mostrarFiltros = !mostrarFiltros"
+        [attr.aria-expanded]="mostrarFiltros">
+        ☷ Filtros {{ mostrarFiltros ? '▲' : '▼' }}
+      </button>
+    </header>
+
+    
+@if (mostrarFiltros) {
+
+  <div class="filtros-desplegables">
+
+    <!-- BUSCADOR GENERAL -->
+
+    <div class="form-group filtro-busqueda">
+
+      <label for="buscarEmpleado">
+        Buscar empleado
+      </label>
+
+      <div class="buscador-contenedor">
+
+        <span class="buscador-icono" aria-hidden="true">
+          &#9906;
+        </span>
+
+        <input
+          id="buscarEmpleado"
+          type="search"
+          [(ngModel)]="filtroBusqueda"
+          (ngModelChange)="aplicarBusqueda()"
+          placeholder="Nombre, apellido o número de nómina..."
+          autocomplete="off"
+        />
+
+      </div>
+
+    </div>
+
+    <!-- FILTRO POR PUESTO -->
+
+    <div class="form-group filtro-puesto">
+
+      <label for="filtrarPuesto">
+        Puesto / área
+      </label>
+
+      <select
+        id="filtrarPuesto"
+        [(ngModel)]="filtroPuesto"
+        (ngModelChange)="aplicarFiltros()">
+
+        <option [ngValue]="0">
+          Todos los puestos
+        </option>
+
+        @for (p of puestos; track p.PuestoID) {
+          <option [ngValue]="p.PuestoID">
+            {{ p.NombrePuesto }}
+          </option>
+        }
+
+      </select>
+
+    </div>
+
+    <!-- FILTROS POR ESTADO -->
+
+    <div class="form-group filtro-estado">
+
+      <label>
+        Estado del personal
+      </label>
+
+      <div class="checkbox-grupo">
+
+        <label class="checkbox-opcion">
+
+          <input
+            type="checkbox"
+            [(ngModel)]="filtroActivos"
+            (ngModelChange)="cambiarFiltroEstado()"
+          />
+
+          <span>Activos</span>
+
+        </label>
+
+        <label class="checkbox-opcion">
+
+          <input
+            type="checkbox"
+            [(ngModel)]="filtroInactivos"
+            (ngModelChange)="cambiarFiltroEstado()"
+          />
+
+          <span>Inactivos</span>
+
+        </label>
+
+      </div>
+
+    </div>
+
+    <!-- LIMPIAR -->
+
+    <div class="filtro-acciones">
+
+      <button
+        type="button"
+        class="btn-cancel"
+        (click)="limpiarFiltros()">
+
+        Limpiar filtros
+
+      </button>
+
+    </div>
+
+  </div>
+
+}
+
+
+    <div class="tabla-contenedor">
+
+      <table class="tblempleados">
+
+        <thead>
           <tr>
-            <td>{{ e.Nomina }}</td>
-            <td>{{ e.Nombre }} {{ e.Apellidos }}</td>
+            <th>No. de Nómina</th>
+            <th>Nombre completo</th>
+            <th>Puesto</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          @for (e of empleados; track e.personalID) {
+          <tr>
+
+            <td>
+              <a class="nomina-enlace" [routerLink]="['/empleados', e.personalID]"
+                [attr.aria-label]="'Ver expediente de nómina ' + e.Nomina">
+                {{ e.Nomina }}
+              </a>
+            </td>
+
+            <td>
+              {{ e.Nombre }} {{ e.Apellidos }}
+            </td>
+
             <td>{{ e.NombrePuesto }}</td>
+
+            <td>
+              <span class="etiqueta-estado" [class.activo]="e.Activo">
+                {{ e.Activo ? 'Activo' : 'Inactivo' }}
+              </span>
+            </td>
+
             <td class="acciones">
-              <button type="button" class="btn-edit" (click)="verEmpleado(e.personalID)">Ver</button>
-              <button type="button" class="btn-edit" (click)="editarEmpleado(e)">Editar</button>
-              <button type="button" class="btn-delete" (click)="solicitarEliminar(e)">Eliminar</button>
+
+              <button type="button" class="btn-edit" (click)="editarEmpleado(e)">
+                Editar
+              </button>
+
+              <button type="button" [class]="e.Activo ? 'btn-delete' : 'btn-save'" (click)="solicitarCambioEstado(e)">
+                {{ e.Activo ? 'Dar de baja' : 'Reactivar' }}
+              </button>
+
+            </td>
+
+          </tr>
+
+          } @empty {
+          <tr>
+            <td colspan="5">
+              {{ cargando
+              ? 'Cargando empleados...'
+              : 'No se encontraron empleados.' }}
             </td>
           </tr>
-        } @empty {
-          <tr><td colspan="4">{{ cargando ? 'Cargando empleados...' : 'No se encontraron empleados.' }}</td></tr>
-        }
-      </tbody>
-    </table>
-  </div>
+          }
 
-  <div class="paginacion">
-    <div class="paginacion-info">
-      <span>Total de empleados: {{ totalRegistros }}</span>
-      <label>
-        Mostrar:
-        <select [(ngModel)]="registrosPorPagina" (ngModelChange)="cambiarLimite()">
-          <option [ngValue]="5">5</option>
-          <option [ngValue]="10">10</option>
-          <option [ngValue]="20">20</option>
-          <option [ngValue]="50">50</option>
-        </select>
+        </tbody>
+      </table>
+
+    </div>
+
+    <!-- PAGINACIÓN -->
+
+    <div class="paginacion">
+
+      <div class="paginacion-info">
+        <span>
+          Total filtrado: {{ totalRegistros }}
+        </span>
+
+        <label>
+          Mostrar
+
+          <select [(ngModel)]="registrosPorPagina" (ngModelChange)="cambiarLimite()">
+            <option [ngValue]="5">5</option>
+            <option [ngValue]="10">10</option>
+            <option [ngValue]="20">20</option>
+            <option [ngValue]="50">50</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="paginacion-controles">
+
+        <button type="button" [disabled]="paginaActual <= 1 || cargando" (click)="cambiarPagina(paginaActual - 1)">
+          Anterior
+        </button>
+
+        <span>
+          Página {{ paginaActual }}
+          de {{ totalPaginas || 1 }}
+        </span>
+
+        <button type="button" [disabled]="paginaActual >= totalPaginas || cargando"
+          (click)="cambiarPagina(paginaActual + 1)">
+          Siguiente
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- CONFIRMACIÓN DE CAMBIO DE ESTADO -->
+
+  @if (empleadoPorCambiar) {
+
+  <div class="modal-fondo">
+
+    <section class="modal-confirmacion" role="dialog" aria-modal="true" aria-labelledby="estadoTitulo">
+
+      <h2 id="estadoTitulo">
+        {{ empleadoPorCambiar.Activo
+        ? 'Dar de baja al empleado'
+        : 'Reactivar empleado' }}
+      </h2>
+
+      <p>
+        {{ empleadoPorCambiar.Nombre }}
+        {{ empleadoPorCambiar.Apellidos }}
+        ({{ empleadoPorCambiar.Nomina }})
+      </p>
+
+      @if (empleadoPorCambiar.Activo) {
+      <label class="form-group">
+        Motivo de baja (opcional)
+
+        <textarea [(ngModel)]="motivoBaja" maxlength="250" rows="3">
+            </textarea>
       </label>
-    </div>
-    <div class="paginacion-controles">
-      <button type="button" [disabled]="paginaActual <= 1 || cargando"
-        (click)="cambiarPagina(paginaActual - 1)">Anterior</button>
-      <span>Página {{ paginaActual }} de {{ totalPaginas || 1 }}</span>
-      <button type="button" [disabled]="paginaActual >= totalPaginas || cargando"
-        (click)="cambiarPagina(paginaActual + 1)">Siguiente</button>
-    </div>
+      }
+
+      <div class="form-actions">
+
+        <button type="button" class="btn-cancel" [disabled]="cambiandoEstado" (click)="cancelarCambioEstado()">
+          Cancelar
+        </button>
+
+        <button type="button" [class]="empleadoPorCambiar.Activo ? 'btn-delete' : 'btn-save'"
+          [disabled]="cambiandoEstado" (click)="confirmarCambioEstado()">
+          {{ cambiandoEstado ? 'Procesando...' : 'Confirmar' }}
+        </button>
+
+      </div>
+
+    </section>
+
   </div>
+  }
+
+  <!-- NOTIFICACIONES -->
 
   @if (mensajeToast) {
-    <div class="toast" [class.toast-exito]="tipoToast === 'exito'"
-      [class.toast-error]="tipoToast === 'error'"
-      [class.toast-advertencia]="tipoToast === 'advertencia'"
-      role="status" aria-live="polite">
-      <span>{{ mensajeToast }}</span>
-      <button type="button" class="toast-cerrar" (click)="cerrarToast()" aria-label="Cerrar notificación">×</button>
-    </div>
+  <div class="toast" [class.toast-exito]="tipoToast === 'exito'" [class.toast-error]="tipoToast === 'error'"
+    [class.toast-advertencia]="tipoToast === 'advertencia'" role="status" aria-live="polite">
+
+    <span>{{ mensajeToast }}</span>
+
+    <button type="button" class="toast-cerrar" (click)="cerrarToast()" aria-label="Cerrar notificación">
+      ×
+    </button>
+
+  </div>
   }
 
-  @if (empleadoPorEliminar) {
-    <div class="modal-fondo" role="presentation">
-      <section class="modal-confirmacion" role="dialog" aria-modal="true" aria-labelledby="titulo-confirmacion">
-        <h2 id="titulo-confirmacion">¿Eliminar empleado?</h2>
-        <p>Se eliminará el registro de <strong>{{ empleadoPorEliminar.Nombre }} {{ empleadoPorEliminar.Apellidos }}</strong>
-          y su fotografía asociada. Esta acción no se puede deshacer.</p>
-        <div class="form-actions">
-          <button type="button" class="btn-cancel" (click)="cancelarEliminacion()">Cancelar</button>
-          <button type="button" class="btn-delete" (click)="confirmarEliminacion()">Sí, eliminar</button>
-        </div>
-      </section>
-    </div>
-  }
 </div>

@@ -1,9 +1,38 @@
 
+<div class="layout">
 
+  <aside class="sidebar">
 
+    <div class="marca">
+      <span class="marca-icono">RH</span>
 
-<main>
-  <router-outlet></router-outlet>
-</main>
+      <div>
+        <strong>Gestión RH</strong>
+        <small>Administración</small>
+      </div>
+    </div>
 
-<footer>Soy un footer</footer>
+    <nav aria-label="Menú principal">
+
+      <a
+        routerLink="/empleados"
+        routerLinkActive="seleccionado"
+        [routerLinkActiveOptions]="{ exact: false }">
+        Usuarios
+      </a>
+
+      <a
+        routerLink="/puestos"
+        routerLinkActive="seleccionado">
+        Puestos
+      </a>
+
+    </nav>
+
+  </aside>
+
+  <main class="contenido">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>

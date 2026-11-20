@@ -1,43 +1,69 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router } from '@angular/router';
-
+import { Router, RouterLink } from '@angular/router';
+import { Observable, map } from 'rxjs';
 import { empleado } from '../../interfaces/empleado.interface';
 import { Puesto } from '../../interfaces/puesto.interface';
-import { EmpleadosService } from '../../services/empleados.service';
+import { EmpleadosService, RespuestaRegistro, Estadisticas, CampoFiltro, EstadoFiltro } from '../../services/empleados.service';
 
 type TipoToast = 'exito' | 'error' | 'advertencia';
 
 @Component({
   selector: 'app-empleados',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink],
   templateUrl: './empleados.component.html',
   styleUrl: './empleados.component.css'
 })
 export class EmpleadosComponent implements OnInit, OnDestroy {
-  private readonly empleadosService = inject(EmpleadosService);
-  private readonly router = inject(Router);
 
+  private servicio = inject(EmpleadosService);
+  private router = inject(Router);
+
+  // Información
+  empleados: empleado[] = [];
+  puestos: Puesto[] = [];
+  estadisticas: Estadisticas | null = null;
+
+  // Formulario
   empleadoEditado: number | null = null;
   mostrarFormulario = false;
   guardando = false;
-  empleadoPorEliminar: empleado | null = null;
 
-  puestos: Puesto[] = [];
-  empleados: empleado[] = [];
+  // Bajas y reactivaciones
+  empleadoPorCambiar: empleado | null = null;
+  motivoBaja = '';
+  cambiandoEstado = false;
 
+  // Filtros
+  mostrarFiltros = false;
+  filtroActivos = true;
+  filtroInactivos = true;
+  filtroEstado: EstadoFiltro = 'todos';
   filtroBusqueda = '';
   filtroPuesto = 0;
+
+  // Paginación
   paginaActual = 1;
   registrosPorPagina = 10;
   totalRegistros = 0;
   totalPaginas = 0;
   cargando = false;
-  private numeroSolicitud = 0;
-  private temporizadorBusqueda: ReturnType<typeof setTimeout> | null = null;
 
+  private numeroSolicitud = 0;
+
+  private temporizadorBusqueda:
+    ReturnType<typeof setTimeout> | null = null;
+
+  private temporizadorToast:
+    ReturnType<typeof setTimeout> | null = null;
+
+  // Notificaciones
+  mensajeToast = '';
+  tipoToast: TipoToast = 'exito';
+
+  // Campos
   nombre = '';
   apellidos = '';
   fnacimiento = '';
@@ -48,34 +74,83 @@ export class EmpleadosComponent implements OnInit, OnDestroy {
   numeroContacto = '';
   fechaMaxima = '';
 
+  // Validaciones
   errorTelefono = false;
   errorNumeroContacto = false;
   errorFecha = false;
   mensajeErrorFecha = '';
 
+  // Foto
   fotoSeleccionada: File | null = null;
   vistaPreviaFoto: string | null = null;
   fotoActualDisponible = false;
 
-  mensajeToast = '';
-  tipoToast: TipoToast = 'exito';
-  private temporizadorToast: ReturnType<typeof setTimeout> | null = null;
+
+cambiarFiltroEstado(): void {
+
+  // Evitar que se desmarquen las dos casillas
+  if (!this.filtroActivos && !this.filtroInactivos) {
+
+    this.filtroActivos = true;
+    this.filtroInactivos = true;
+
+    this.mostrarToast(
+      'Debes mantener al menos un estado seleccionado.',
+      'advertencia'
+    );
+
+    this.aplicarFiltros();
+    return;
+  }
+
+  // Ambos seleccionados = todos
+  if (this.filtroActivos && this.filtroInactivos) {
+    this.filtroEstado = 'todos';
+  }
+
+  // Solo activos
+  else if (this.filtroActivos) {
+    this.filtroEstado = 'activo';
+  }
+
+  // Solo inactivos
+  else {
+    this.filtroEstado = 'inactivo';
+  }
+
+  this.aplicarFiltros();
+}
+
 
   ngOnInit(): void {
     this.fechaMaxima = this.obtenerFechaActual();
     this.cargarPuestos();
+    this.cargarEstadisticas();
     this.cargarEmpleados();
   }
 
   ngOnDestroy(): void {
-    if (this.temporizadorToast) clearTimeout(this.temporizadorToast);
-    if (this.temporizadorBusqueda) clearTimeout(this.temporizadorBusqueda);
+    if (this.temporizadorToast !== null) {
+      clearTimeout(this.temporizadorToast);
+    }
+
+    if (this.temporizadorBusqueda !== null) {
+      clearTimeout(this.temporizadorBusqueda);
+    }
   }
 
-  mostrarToast(mensaje: string, tipo: TipoToast = 'exito'): void {
-    if (this.temporizadorToast) clearTimeout(this.temporizadorToast);
+  mostrarToast(
+    mensaje: string,
+    tipo: TipoToast = 'exito'
+  ): void {
+
+    if (this.temporizadorToast !== null) {
+      clearTimeout(this.temporizadorToast);
+    }
+
     this.mensajeToast = mensaje;
     this.tipoToast = tipo;
+
     this.temporizadorToast = setTimeout(() => {
       this.mensajeToast = '';
       this.temporizadorToast = null;
@@ -83,14 +158,228 @@ export class EmpleadosComponent implements OnInit, OnDestroy {
   }
 
   cerrarToast(): void {
-    if (this.temporizadorToast) clearTimeout(this.temporizadorToast);
+    if (this.temporizadorToast !== null) {
+      clearTimeout(this.temporizadorToast);
+    }
+
     this.temporizadorToast = null;
     this.mensajeToast = '';
   }
 
-  verEmpleado(id: number): void {
-    this.router.navigate(['/empleados', id]);
+  // FECHA ACTUAL
+
+  obtenerFechaActual(): string {
+    const hoy = new Date();
+
+    const anio = hoy.getFullYear();
+    const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+    const dia = String(hoy.getDate()).padStart(2, '0');
+
+    return `${anio}-${mes}-${dia}`;
   }
+
+  validarFecha(): void {
+    this.errorFecha = false;
+    this.mensajeErrorFecha = '';
+
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(this.fnacimiento)) {
+      this.errorFecha = true;
+      this.mensajeErrorFecha =
+        'Selecciona una fecha con año de cuatro dígitos.';
+      return;
+    }
+
+    const [anio, mes, dia] = this.fnacimiento
+      .split('-')
+      .map(Number);
+
+    const fecha = new Date(0);
+    fecha.setFullYear(anio, mes - 1, dia);
+
+    if (
+      anio < 1900 ||
+      this.fnacimiento > this.fechaMaxima ||
+      fecha.getFullYear() !== anio ||
+      fecha.getMonth() !== mes - 1 ||
+      fecha.getDate() !== dia
+    ) {
+      this.errorFecha = true;
+      this.mensajeErrorFecha =
+        'Fecha de nacimiento inválida.';
+    }
+  }
+
+  validarTelefono(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    this.errorTelefono = /\D/.test(input.value);
+
+    this.telefono = input.value
+      .replace(/\D/g, '')
+      .slice(0, 10);
+
+    input.value = this.telefono;
+  }
+
+  validarNumeroContacto(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    this.errorNumeroContacto = /\D/.test(input.value);
+
+    this.numeroContacto = input.value
+      .replace(/\D/g, '')
+      .slice(0, 10);
+
+    input.value = this.numeroContacto;
+  }
+
+  // CARGAR ESTADÍSTICAS
+
+  cargarEstadisticas(): void {
+    this.servicio.obtenerEstadisticas().subscribe({
+      next: (datos: Estadisticas) => {
+        this.estadisticas = datos;
+      },
+
+      error: (error: HttpErrorResponse) => {
+        console.error('Error de estadísticas:', error);
+
+        this.mostrarToast(
+          'No se pudieron cargar los indicadores.',
+          'error'
+        );
+      }
+    });
+  }
+
+  // CARGAR PUESTOS
+
+  cargarPuestos(): void {
+    this.servicio.obtenerPuestos().subscribe({
+      next: (datos: Puesto[]) => {
+        this.puestos = datos;
+      },
+
+      error: (error: HttpErrorResponse) => {
+        console.error('Error de puestos:', error);
+
+        this.mostrarToast(
+          'No se pudieron cargar los puestos.',
+          'error'
+        );
+      }
+    });
+  }
+
+  // CARGAR EMPLEADOS CON FILTROS Y PAGINACIÓN
+
+  cargarEmpleados(): void {
+    const solicitudActual = ++this.numeroSolicitud;
+
+    this.cargando = true;
+
+    this.servicio.obtenerEmpleadosPaginados(
+      this.paginaActual,
+      this.registrosPorPagina,
+      this.filtroBusqueda,
+      this.filtroPuesto,
+      'todos',
+      this.filtroEstado
+    ).subscribe({
+
+      next: respuesta => {
+        if (solicitudActual !== this.numeroSolicitud) {
+          return;
+        }
+
+        this.empleados = respuesta.empleados;
+        this.totalRegistros = respuesta.total;
+        this.totalPaginas = respuesta.totalPaginas;
+        this.cargando = false;
+
+        if (
+          this.paginaActual > 1 &&
+          this.paginaActual > this.totalPaginas
+        ) {
+          this.paginaActual = Math.max(
+            1,
+            this.totalPaginas
+          );
+
+          this.cargarEmpleados();
+        }
+      },
+
+      error: (error: HttpErrorResponse) => {
+        if (solicitudActual !== this.numeroSolicitud) {
+          return;
+        }
+
+        this.cargando = false;
+
+        console.error('Error en tabla:', error);
+
+        this.mostrarToast(
+          'No se pudo cargar la tabla.',
+          'error'
+        );
+      }
+    });
+  }
+
+  // FILTROS
+
+  aplicarFiltros(): void {
+    if (this.temporizadorBusqueda !== null) {
+      clearTimeout(this.temporizadorBusqueda);
+    }
+
+    this.paginaActual = 1;
+    this.cargarEmpleados();
+  }
+
+  aplicarBusqueda(): void {
+    if (this.temporizadorBusqueda !== null) {
+      clearTimeout(this.temporizadorBusqueda);
+    }
+
+    this.temporizadorBusqueda = setTimeout(() => {
+      this.paginaActual = 1;
+      this.cargarEmpleados();
+    }, 300);
+  }
+
+  limpiarFiltros(): void {
+
+  this.filtroBusqueda = '';
+  this.filtroPuesto = 0;
+
+  this.filtroActivos = true;
+  this.filtroInactivos = true;
+
+  this.filtroEstado = 'todos';
+
+  this.aplicarFiltros();
+}
+
+  cambiarPagina(nuevaPagina: number): void {
+    if (
+      this.cargando ||
+      nuevaPagina < 1 ||
+      nuevaPagina > this.totalPaginas
+    ) {
+      return;
+    }
+
+    this.paginaActual = nuevaPagina;
+    this.cargarEmpleados();
+  }
+
+  cambiarLimite(): void {
+    this.aplicarFiltros();
+  }
+
+  // FORMULARIO
 
   nuevoEmpleado(): void {
     this.limpiarFormulario();
@@ -99,245 +388,217 @@ export class EmpleadosComponent implements OnInit, OnDestroy {
 
   cancelarFormulario(): void {
     if (this.guardando) return;
+
     this.limpiarFormulario();
     this.mostrarFormulario = false;
   }
 
-  obtenerFechaActual(): string {
-    const hoy = new Date();
-    const anio = hoy.getFullYear();
-    const mes = String(hoy.getMonth() + 1).padStart(2, '0');
-    const dia = String(hoy.getDate()).padStart(2, '0');
-    return `${anio}-${mes}-${dia}`;
+  verEmpleado(id: number): void {
+    this.router.navigate(['/empleados', id]);
   }
 
-  validarFecha(): void {
-    this.errorFecha = false;
-    this.mensajeErrorFecha = '';
-    if (!this.fnacimiento) {
-      this.errorFecha = true;
-      this.mensajeErrorFecha = 'Selecciona una fecha de nacimiento.';
-      return;
-    }
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(this.fnacimiento)) {
-      this.errorFecha = true;
-      this.mensajeErrorFecha = 'El año debe tener cuatro dígitos.';
-      return;
-    }
-    const [anio, mes, dia] = this.fnacimiento.split('-').map(Number);
-    if (anio < 1900 || this.fnacimiento > this.obtenerFechaActual()) {
-      this.errorFecha = true;
-      this.mensajeErrorFecha = 'La fecha está fuera del rango permitido.';
-      return;
-    }
-    const fecha = new Date(0);
-    fecha.setFullYear(anio, mes - 1, dia);
-    if (fecha.getFullYear() !== anio || fecha.getMonth() !== mes - 1 || fecha.getDate() !== dia) {
-      this.errorFecha = true;
-      this.mensajeErrorFecha = 'Ingresa una fecha de nacimiento válida.';
-    }
-  }
-
-  validarTelefono(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.errorTelefono = /\D/.test(input.value);
-    this.telefono = input.value.replace(/\D/g, '').slice(0, 10);
-    input.value = this.telefono;
-  }
-
-  validarNumeroContacto(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.errorNumeroContacto = /\D/.test(input.value);
-    this.numeroContacto = input.value.replace(/\D/g, '').slice(0, 10);
-    input.value = this.numeroContacto;
-  }
+  // FOTOGRAFÍA
 
   seleccionarFoto(event: Event): void {
     const input = event.target as HTMLInputElement;
     const archivo = input.files?.[0];
+
     if (!archivo) return;
 
-    const permitidos = ['image/jpeg', 'image/png'];
-    if (!permitidos.includes(archivo.type)) {
-      this.mostrarToast('Solo se permiten fotografías JPG o PNG.', 'error');
+    if (
+      !['image/jpeg', 'image/png'].includes(archivo.type) ||
+      archivo.size > 3 * 1024 * 1024
+    ) {
+      this.mostrarToast(
+        'La foto debe ser JPG o PNG y pesar máximo 3 MB.',
+        'advertencia'
+      );
+
       input.value = '';
-      this.fotoSeleccionada = null;
-      this.vistaPreviaFoto = null;
-      return;
-    }
-    if (archivo.size > 3 * 1024 * 1024) {
-      this.mostrarToast('La fotografía no puede superar 3 MB.', 'error');
-      input.value = '';
-      this.fotoSeleccionada = null;
-      this.vistaPreviaFoto = null;
       return;
     }
 
     this.fotoSeleccionada = archivo;
     this.vistaPreviaFoto = null;
+
     const lector = new FileReader();
+
     lector.onload = () => {
-      if (this.fotoSeleccionada === archivo) {
-        this.vistaPreviaFoto = typeof lector.result === 'string' ? lector.result : null;
+      if (
+        this.fotoSeleccionada === archivo &&
+        typeof lector.result === 'string'
+      ) {
+        this.vistaPreviaFoto = lector.result;
       }
     };
-    lector.onerror = () => this.mostrarToast('No se pudo leer la fotografía.', 'error');
+
     lector.readAsDataURL(archivo);
   }
 
   obtenerUrlFoto(id: number): string {
-    return this.empleadosService.obtenerUrlFoto(id);
+    return this.servicio.obtenerUrlFoto(id);
   }
 
-  cargarEmpleados(): void {
-    const solicitudActual = ++this.numeroSolicitud;
-    this.cargando = true;
-    this.empleadosService.obtenerEmpleadosPaginados(
-      this.paginaActual,
-      this.registrosPorPagina,
-      this.filtroBusqueda,
-      this.filtroPuesto
-    ).subscribe({
-      next: (respuesta) => {
-        if (solicitudActual !== this.numeroSolicitud) return;
-        this.empleados = respuesta.empleados;
-        this.totalRegistros = respuesta.total;
-        this.totalPaginas = respuesta.totalPaginas;
-        this.cargando = false;
-        if (this.paginaActual > 1 && this.paginaActual > this.totalPaginas) {
-          this.paginaActual = Math.max(1, this.totalPaginas);
-          this.cargarEmpleados();
-        }
-      },
-      error: (error: HttpErrorResponse) => {
-        if (solicitudActual !== this.numeroSolicitud) return;
-        this.cargando = false;
-        this.empleados = [];
-        console.error('Error al consultar empleados:', error);
-        this.mostrarToast('No se pudo cargar la lista de empleados.', 'error');
-      }
-    });
-  }
-
-  cargarPuestos(): void {
-    this.empleadosService.obtenerPuestos().subscribe({
-      next: (datos) => this.puestos = datos,
-      error: (error: HttpErrorResponse) => {
-        console.error('Error al cargar puestos:', error);
-        this.mostrarToast('No se pudo cargar el catálogo de puestos.', 'error');
-      }
-    });
-  }
-
-  aplicarFiltros(): void {
-    if (this.temporizadorBusqueda) clearTimeout(this.temporizadorBusqueda);
-    this.paginaActual = 1;
-    this.cargarEmpleados();
-  }
-
-  aplicarBusqueda(): void {
-    if (this.temporizadorBusqueda) clearTimeout(this.temporizadorBusqueda);
-    this.temporizadorBusqueda = setTimeout(() => {
-      this.paginaActual = 1;
-      this.cargarEmpleados();
-    }, 300);
-  }
-
-  cambiarPagina(nuevaPagina: number): void {
-    if (this.cargando || nuevaPagina < 1 || nuevaPagina > this.totalPaginas) return;
-    this.paginaActual = nuevaPagina;
-    this.cargarEmpleados();
-  }
-
-  cambiarLimite(): void {
-    this.paginaActual = 1;
-    this.cargarEmpleados();
-  }
+  // REGISTRAR / ACTUALIZAR
 
   guardarEmpleado(): void {
     if (this.guardando) return;
 
-    const puesto = this.puestos.find(p => p.PuestoID === this.puestoID);
-    if (!this.nombre.trim() || !this.apellidos.trim() || !this.telefono.trim() ||
-        !this.nomina.trim() || !this.domicilio.trim() ||
-        !this.numeroContacto.trim() || !puesto) {
-      this.mostrarToast('Completa todos los campos obligatorios.', 'advertencia');
+    const puesto = this.puestos.find(
+      p => p.PuestoID === this.puestoID
+    );
+
+    if (
+      !this.nombre.trim() ||
+      !this.apellidos.trim() ||
+      !this.nomina.trim() ||
+      !this.domicilio.trim() ||
+      !puesto
+    ) {
+      this.mostrarToast(
+        'Completa los campos obligatorios.',
+        'advertencia'
+      );
+      return;
+    }
+
+    if (
+      this.empleadoEditado === null &&
+      !puesto.Activo
+    ) {
+      this.mostrarToast(
+        'No puedes registrar en un puesto inactivo.',
+        'advertencia'
+      );
       return;
     }
 
     this.validarFecha();
+
     if (this.errorFecha) {
-      this.mostrarToast(this.mensajeErrorFecha, 'advertencia');
+      this.mostrarToast(
+        this.mensajeErrorFecha,
+        'advertencia'
+      );
       return;
     }
 
-    if (!/^\d{10}$/.test(this.telefono) || !/^\d{10}$/.test(this.numeroContacto)) {
-      this.mostrarToast('Los números telefónicos deben tener 10 dígitos.', 'advertencia');
+    if (!/^[0-9]{4}$/.test(this.nomina)) {
+      this.mostrarToast(
+        'La nómina debe contener exactamente 4 números.',
+        'advertencia'
+      );
+      return;
+    }
+
+    if (
+      !/^\d{10}$/.test(this.telefono) ||
+      !/^\d{10}$/.test(this.numeroContacto)
+    ) {
+      this.mostrarToast(
+        'Los teléfonos deben tener 10 dígitos.',
+        'advertencia'
+      );
       return;
     }
 
     const datos: empleado = {
       personalID: this.empleadoEditado ?? 0,
+      PuestoID: this.puestoID,
       Nombre: this.nombre.trim(),
       Apellidos: this.apellidos.trim(),
       Fnacimiento: this.fnacimiento,
       Telefono: this.telefono,
-      PuestoID: this.puestoID,
       NombrePuesto: puesto.NombrePuesto,
       Nomina: this.nomina.trim(),
       Domicilio: this.domicilio.trim(),
-      NumeroContacto: this.numeroContacto
+      NumeroContacto: this.numeroContacto,
+      Activo: true
     };
 
     const idEditando = this.empleadoEditado;
     const foto = this.fotoSeleccionada;
-    const peticion = idEditando === null
-      ? this.empleadosService.guardarEmpleado(datos)
-      : this.empleadosService.actualizarEmpleado(idEditando, datos);
+
+    // Normalizamos la respuesta de POST y PUT
+    const peticion: Observable<RespuestaRegistro> =
+      idEditando === null
+        ? this.servicio.guardarEmpleado(datos)
+        : this.servicio.actualizarEmpleado(
+          idEditando,
+          datos
+        ).pipe(
+          map(() => ({
+            personalID: idEditando
+          }))
+        );
 
     this.guardando = true;
+
     peticion.subscribe({
-      next: (respuesta) => {
-        const idEmpleado = idEditando ?? respuesta.personalID;
-        if (!idEmpleado || !Number.isInteger(idEmpleado)) {
-          this.guardando = false;
-          this.cargarEmpleados();
-          this.mostrarToast('Se guardaron los datos, pero no se recibió el ID para la foto.', 'advertencia');
-          return;
-        }
+
+      next: respuesta => {
+        const personalID = respuesta.personalID;
 
         if (!foto) {
-          this.finalizarGuardado('Empleado guardado correctamente.');
+          this.finalizarGuardado(
+            'Empleado guardado correctamente.'
+          );
           return;
         }
 
-        this.empleadosService.subirFoto(idEmpleado, foto).subscribe({
-          next: () => this.finalizarGuardado('Empleado y fotografía guardados correctamente.'),
+        this.servicio.subirFoto(
+          personalID,
+          foto
+        ).subscribe({
+
+          next: () => {
+            this.finalizarGuardado(
+              'Empleado y fotografía guardados.'
+            );
+          },
+
           error: (error: HttpErrorResponse) => {
-            console.error('Error al subir fotografía:', error);
-            this.finalizarGuardado('El empleado se guardó, pero no se pudo cargar su fotografía.', 'advertencia');
+            console.error('Error de foto:', error);
+
+            this.finalizarGuardado(
+              'Datos guardados, pero falló la fotografía.',
+              'advertencia'
+            );
           }
         });
       },
+
       error: (error: HttpErrorResponse) => {
         this.guardando = false;
-        console.error('Error al guardar empleado:', error);
-        const mensaje = error.status === 409
-          ? 'Este número de nómina ya está registrado.'
-          : error.error?.mensaje || 'No se pudo guardar el empleado.';
-        this.mostrarToast(mensaje, 'error');
+
+        this.mostrarToast(
+          error.status === 409
+            ? error.error?.mensaje ||
+            'La nómina ya existe o el puesto no está disponible.'
+            : error.error?.mensaje ||
+            'No se pudo guardar el empleado.',
+          'error'
+        );
       }
     });
   }
 
-  private finalizarGuardado(mensaje: string, tipo: TipoToast = 'exito'): void {
+  private finalizarGuardado(
+    mensaje: string,
+    tipo: TipoToast = 'exito'
+  ): void {
     this.guardando = false;
-    this.cargarEmpleados();
     this.cancelarFormulario();
+    this.cargarEmpleados();
+    this.cargarEstadisticas();
     this.mostrarToast(mensaje, tipo);
   }
 
+  // EDITAR
+
   editarEmpleado(e: empleado): void {
+    this.limpiarFormulario();
+
     this.empleadoEditado = e.personalID;
     this.nombre = e.Nombre;
     this.apellidos = e.Apellidos;
@@ -347,43 +608,69 @@ export class EmpleadosComponent implements OnInit, OnDestroy {
     this.nomina = e.Nomina;
     this.domicilio = e.Domicilio;
     this.numeroContacto = e.NumeroContacto;
-    this.fotoSeleccionada = null;
-    this.vistaPreviaFoto = null;
+
     this.fotoActualDisponible = true;
-    this.errorTelefono = false;
-    this.errorNumeroContacto = false;
-    this.errorFecha = false;
-    this.mensajeErrorFecha = '';
     this.mostrarFormulario = true;
   }
 
-  solicitarEliminar(e: empleado): void {
-    this.empleadoPorEliminar = e;
+  // DAR DE BAJA / REACTIVAR
+
+  solicitarCambioEstado(e: empleado): void {
+    this.empleadoPorCambiar = e;
+    this.motivoBaja = '';
   }
 
-  cancelarEliminacion(): void {
-    this.empleadoPorEliminar = null;
+  cancelarCambioEstado(): void {
+    if (!this.cambiandoEstado) {
+      this.empleadoPorCambiar = null;
+    }
   }
 
-  confirmarEliminacion(): void {
-    const seleccionado = this.empleadoPorEliminar;
-    if (!seleccionado) return;
-    this.empleadoPorEliminar = null;
+  confirmarCambioEstado(): void {
+    const seleccionado = this.empleadoPorCambiar;
 
-    this.empleadosService.eliminarEmpleado(seleccionado.personalID).subscribe({
-      next: () => {
-        if (this.empleadoEditado === seleccionado.personalID) this.cancelarFormulario();
+    if (
+      !seleccionado ||
+      this.cambiandoEstado
+    ) {
+      return;
+    }
+
+    this.cambiandoEstado = true;
+
+    this.servicio.cambiarEstadoEmpleado(
+      seleccionado.personalID,
+      !seleccionado.Activo,
+      seleccionado.Activo ? this.motivoBaja : ''
+    ).subscribe({
+
+      next: respuesta => {
+        this.cambiandoEstado = false;
+        this.empleadoPorCambiar = null;
+
         this.cargarEmpleados();
-        this.mostrarToast('Empleado eliminado correctamente.', 'exito');
+        this.cargarEstadisticas();
+
+        this.mostrarToast(respuesta.mensaje);
       },
+
       error: (error: HttpErrorResponse) => {
-        console.error('Error al eliminar empleado:', error);
-        this.mostrarToast(error.error?.mensaje || 'No se pudo eliminar al empleado.', 'error');
+        this.cambiandoEstado = false;
+        this.empleadoPorCambiar = null;
+
+        this.mostrarToast(
+          error.error?.mensaje ||
+          'No se pudo cambiar el estado.',
+          'error'
+        );
       }
     });
   }
 
+  // LIMPIAR FORMULARIO
+
   limpiarFormulario(): void {
+    this.empleadoEditado = null;
     this.nombre = '';
     this.apellidos = '';
     this.fnacimiento = '';
@@ -392,13 +679,14 @@ export class EmpleadosComponent implements OnInit, OnDestroy {
     this.nomina = '';
     this.domicilio = '';
     this.numeroContacto = '';
-    this.empleadoEditado = null;
+
     this.fotoSeleccionada = null;
     this.vistaPreviaFoto = null;
     this.fotoActualDisponible = false;
+
+    this.errorFecha = false;
     this.errorTelefono = false;
     this.errorNumeroContacto = false;
-    this.errorFecha = false;
     this.mensajeErrorFecha = '';
   }
 }

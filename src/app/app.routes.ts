@@ -2,13 +2,16 @@
 import { Routes } from '@angular/router';
 
 import { EmpleadosComponent } from './pages/empleados/empleados.component';
+
 import { EmpleadoDetalleComponent } from './pages/empleado-detalle/empleado-detalle.component';
+
+import { PuestosComponent } from './pages/puestos/puestos.component';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'empleados',
-    pathMatch: 'full'
+    pathMatch: 'full',
+    redirectTo: 'empleados'
   },
   {
     path: 'empleados',
@@ -17,6 +20,10 @@ export const routes: Routes = [
   {
     path: 'empleados/:id',
     component: EmpleadoDetalleComponent
+  },
+  {
+    path: 'puestos',
+    component: PuestosComponent
   },
   {
     path: '**',

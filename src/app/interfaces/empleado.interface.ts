@@ -9,4 +9,5 @@ export interface empleado {
   Nomina: string;
   Domicilio: string;
   NumeroContacto: string;
+  Activo: boolean;
 }

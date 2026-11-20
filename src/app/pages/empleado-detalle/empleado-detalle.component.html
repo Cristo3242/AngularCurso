@@ -1,195 +1,232 @@
-
 <div class="detalle-container">
 
   <header class="detalle-header">
+
     <h1>Expediente del empleado</h1>
 
     <button type="button" (click)="volver()">
       Volver
     </button>
+
   </header>
 
   @if (cargando) {
-    <p class="estado">Cargando expediente...</p>
+  <p>Cargando expediente...</p>
 
   } @else if (mensajeError) {
-    <p class="mensaje-error">{{ mensajeError }}</p>
+  <p class="mensaje-error">
+    {{ mensajeError }}
+  </p>
 
   } @else if (empleado) {
 
-    <section class="detalle-card">
+  <section class="detalle-card">
 
-      <!-- ENCABEZADO CON FOTO PEQUEÑA -->
+    <div class="perfil-empleado">
 
-      <div class="perfil-empleado">
+      <!-- FOTO -->
 
-        <div class="foto-contenedor">
+      <div class="foto-contenedor">
 
-          @if (fotoDisponible) {
-            <img
-              [src]="obtenerUrlFoto()"
-              (error)="fotoDisponible = false"
-              alt="Fotografía del empleado"
-              class="foto-expediente"
-            />
-          } @else {
-            <div class="sin-foto">
-              Sin foto
-            </div>
-          }
+        @if (vistaPreviaFoto) {
+        <img class="foto-expediente" [src]="vistaPreviaFoto" alt="Vista previa" />
 
+        } @else if (fotoDisponible) {
+        <img class="foto-expediente" [src]="obtenerUrlFoto()" (error)="fotoDisponible = false"
+          alt="Fotografía del empleado" />
+
+        } @else {
+        <div class="sin-foto">
+          Sin fotografía
         </div>
-
-        <div class="perfil-informacion">
-
-          <h2>
-            {{ empleado.Nombre }} {{ empleado.Apellidos }}
-          </h2>
-
-          <p class="perfil-puesto">
-            {{ empleado.NombrePuesto }}
-          </p>
-
-          <p class="perfil-nomina">
-            Nómina: {{ empleado.Nomina }}
-          </p>
-
-          @if (fotoDisponible) {
-            <button
-              type="button"
-              class="btn-eliminar-foto"
-              [disabled]="eliminandoFoto"
-              (click)="solicitarEliminarFoto()">
-              Eliminar foto
-            </button>
-          }
-
-        </div>
+        }
 
       </div>
 
-      <!-- INFORMACIÓN DEL EMPLEADO -->
+      <!-- DATOS PRINCIPALES -->
 
-      <h3 class="seccion-titulo">
-        Información personal
+      <div class="perfil-informacion">
+
+        <h2>
+          {{ empleado.Nombre }}
+          {{ empleado.Apellidos }}
+        </h2>
+
+        <p class="perfil-puesto">
+          {{ empleado.NombrePuesto }}
+        </p>
+
+        <p class="perfil-nomina">
+          Nómina: {{ empleado.Nomina }}
+        </p>
+
+        <span class="estado" [class.activo]="empleado.Activo">
+          {{ empleado.Activo ? 'Activo' : 'Inactivo' }}
+        </span>
+
+        <!-- ACCIONES DE FOTOGRAFÍA -->
+
+        <div class="acciones-foto">
+
+          <label class="btn-subir-foto">
+            {{ fotoDisponible ? 'Cambiar foto' : 'Subir foto' }}
+
+            <input type="file" accept="image/jpeg,image/png" (change)="seleccionarFoto($event)"
+              [disabled]="subiendoFoto || eliminandoFoto" />
+          </label>
+
+          @if (fotoDisponible) {
+          <button type="button" class="btn-eliminar-foto" (click)="solicitarEliminarFoto()"
+            [disabled]="subiendoFoto || eliminandoFoto">
+            Eliminar foto
+          </button>
+          }
+
+        </div>
+
+        @if (fotoSeleccionada) {
+
+        <div class="acciones-foto">
+
+          <span class="archivo">
+            {{ fotoSeleccionada.name }}
+          </span>
+
+          <button type="button" class="btn-guardar-foto" (click)="guardarFoto()" [disabled]="subiendoFoto">
+            {{ subiendoFoto
+            ? 'Guardando...'
+            : 'Guardar foto' }}
+          </button>
+
+          <button type="button" class="btn-cancelar" (click)="cancelarSeleccionFoto()" [disabled]="subiendoFoto">
+            Cancelar
+          </button>
+
+        </div>
+
+        }
+
+        <small>
+          JPG / PNG · Máximo 3 MB
+        </small>
+
+      </div>
+
+    </div>
+
+    <h3>Información personal</h3>
+
+    <!-- DATOS COMPLETOS -->
+
+    <div class="detalle-grid">
+
+      <div>
+        <strong>ID de personal</strong>
+        <p>{{ empleado.personalID }}</p>
+      </div>
+
+      <div>
+        <strong>No. de Nómina</strong>
+        <p>{{ empleado.Nomina }}</p>
+      </div>
+
+      <div>
+        <strong>Nombre</strong>
+        <p>{{ empleado.Nombre }}</p>
+      </div>
+
+      <div>
+        <strong>Apellidos</strong>
+        <p>{{ empleado.Apellidos }}</p>
+      </div>
+
+      <div>
+        <strong>Fecha de nacimiento</strong>
+        <p>{{ empleado.Fnacimiento }}</p>
+      </div>
+
+      <div>
+        <strong>Teléfono</strong>
+        <p>{{ empleado.Telefono }}</p>
+      </div>
+
+      <div>
+        <strong>Número de contacto</strong>
+        <p>{{ empleado.NumeroContacto }}</p>
+      </div>
+
+      <div>
+        <strong>Domicilio</strong>
+        <p>{{ empleado.Domicilio }}</p>
+      </div>
+
+      <div>
+        <strong>Puesto</strong>
+        <p>{{ empleado.NombrePuesto }}</p>
+      </div>
+
+      <div>
+        <strong>Estado</strong>
+        <p>
+          {{ empleado.Activo ? 'Activo' : 'Inactivo' }}
+        </p>
+      </div>
+
+    </div>
+
+  </section>
+  }
+
+  <!-- CONFIRMACIÓN DE ELIMINAR FOTO -->
+
+  @if (confirmarEliminarFoto) {
+
+  <div class="modal-fondo">
+
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="tituloFoto">
+
+      <h3 id="tituloFoto">
+        ¿Eliminar fotografía?
       </h3>
 
-      <div class="detalle-grid">
+      <p>
+        Se eliminará la fotografía,
+        no al empleado.
+      </p>
 
-        <div>
-          <strong>ID de personal</strong>
-          <p>{{ empleado.personalID }}</p>
-        </div>
+      <div class="modal-acciones">
 
-        <div>
-          <strong>No. de Nómina</strong>
-          <p>{{ empleado.Nomina }}</p>
-        </div>
+        <button type="button" (click)="cancelarEliminarFoto()" [disabled]="eliminandoFoto">
+          Cancelar
+        </button>
 
-        <div>
-          <strong>Nombre</strong>
-          <p>{{ empleado.Nombre }}</p>
-        </div>
-
-        <div>
-          <strong>Apellidos</strong>
-          <p>{{ empleado.Apellidos }}</p>
-        </div>
-
-        <div>
-          <strong>Fecha de nacimiento</strong>
-          <p>{{ empleado.Fnacimiento }}</p>
-        </div>
-
-        <div>
-          <strong>Teléfono</strong>
-          <p>{{ empleado.Telefono }}</p>
-        </div>
-
-        <div>
-          <strong>Número de contacto</strong>
-          <p>{{ empleado.NumeroContacto }}</p>
-        </div>
-
-        <div>
-          <strong>Domicilio</strong>
-          <p>{{ empleado.Domicilio }}</p>
-        </div>
-
-        <div>
-          <strong>ID de puesto</strong>
-          <p>{{ empleado.PuestoID }}</p>
-        </div>
-
-        <div>
-          <strong>Puesto</strong>
-          <p>{{ empleado.NombrePuesto }}</p>
-        </div>
+        <button type="button" class="btn-eliminar-foto" (click)="eliminarFoto()" [disabled]="eliminandoFoto">
+          {{ eliminandoFoto
+          ? 'Eliminando...'
+          : 'Sí, eliminar' }}
+        </button>
 
       </div>
 
     </section>
+
+  </div>
   }
 
-
-  @if (confirmarEliminarFoto) {
-
-    <div class="modal-fondo">
-
-      <div
-        class="modal-confirmacion"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="tituloEliminarFoto"
-      >
-
-        <h3 id="tituloEliminarFoto">
-          ¿Eliminar fotografía?
-        </h3>
-
-        <p>
-          La fotografía se eliminará del expediente.
-          Los datos del empleado se conservarán.
-        </p>
-
-        <div class="modal-acciones">
-
-          <button
-            type="button"
-            class="btn-cancelar"
-            [disabled]="eliminandoFoto"
-            (click)="cancelarEliminarFoto()">
-            Cancelar
-          </button>
-
-          <button
-            type="button"
-            class="btn-confirmar-eliminar"
-            [disabled]="eliminandoFoto"
-            (click)="eliminarFoto()">
-            {{ eliminandoFoto ? 'Eliminando...' : 'Sí, eliminar' }}
-          </button>
-
-        </div>
-
-      </div>
-
-    </div>
-  }
-
+  <!-- TOAST -->
 
   @if (mensajeToast) {
 
-    <div
-      class="toast"
-      [class.toast-exito]="tipoToast === 'exito'"
-      [class.toast-error]="tipoToast === 'error'"
-      role="status"
-      aria-live="polite"
-    >
-      {{ mensajeToast }}
-    </div>
+  <div class="toast" [class.toast-exito]="tipoToast === 'exito'" [class.toast-error]="tipoToast === 'error'"
+    role="status" aria-live="polite">
 
+    <span>{{ mensajeToast }}</span>
+
+    <button type="button" (click)="cerrarToast()" aria-label="Cerrar">
+      ×
+    </button>
+
+  </div>
   }
 
 </div>
