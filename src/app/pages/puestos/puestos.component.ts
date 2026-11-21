@@ -25,6 +25,19 @@ export class PuestosComponent implements OnInit, OnDestroy {
 
   puestos: Puesto[] = [];
 
+  // FILTROS DE PUESTOS
+  mostrarFiltros = false;
+
+// Estado del área
+filtroActivas = true;
+filtroInactivas = true;
+
+// Personal: todos, con personal o sin personal
+filtroPersonal: 'todos' | 'con' | 'sin' = 'todos';
+
+// Bajas históricas: todas, con bajas o sin bajas
+filtroBajas: 'todos' | 'con' | 'sin' = 'todos';
+
   cargando = false;
   guardando = false;
   cambiando = false;
@@ -51,6 +64,76 @@ export class PuestosComponent implements OnInit, OnDestroy {
     }
   }
 
+  // OBTENER PUESTOS FILTRADOS
+  get puestosFiltrados(): Puesto[] {
+
+  return this.puestos.filter(puesto => {
+
+    // Estado del área
+    const cumpleEstado =
+      (this.filtroActivas && puesto.Activo) ||
+      (this.filtroInactivas && !puesto.Activo);
+
+    //  Personal asignado
+    const totalPersonal =
+      puesto.PersonalActivo + puesto.PersonalInactivo;
+
+    let cumplePersonal = true;
+
+    if (this.filtroPersonal === 'con') {
+      cumplePersonal = totalPersonal > 0;
+    }
+
+    if (this.filtroPersonal === 'sin') {
+      cumplePersonal = totalPersonal === 0;
+    }
+
+    //  Historial de bajas
+    let cumpleBajas = true;
+
+    if (this.filtroBajas === 'con') {
+      cumpleBajas = puesto.CantidadBajas > 0;
+    }
+
+    if (this.filtroBajas === 'sin') {
+      cumpleBajas = puesto.CantidadBajas === 0;
+    }
+
+    // Debe cumplir los tres filtros
+    return cumpleEstado &&
+           cumplePersonal &&
+           cumpleBajas;
+
+  });
+}
+
+// CAMBIAR FILTRO DE ESTADO
+cambiarFiltroEstado(): void {
+
+  // Evitar que ambas casillas queden desmarcadas
+  if (!this.filtroActivas && !this.filtroInactivas) {
+
+    this.filtroActivas = true;
+    this.filtroInactivas = true;
+
+    this.toast(
+      'Selecciona al menos un estado.',
+      'advertencia'
+    );
+  }
+}
+
+// LIMPIAR FILTROS
+
+limpiarFiltros(): void {
+
+  this.filtroActivas = true;
+  this.filtroInactivas = true;
+
+  this.filtroPersonal = 'todos';
+  this.filtroBajas = 'todos';
+}
+
   get areasTotales(): number {
     return this.puestos.length;
   }
@@ -65,6 +148,36 @@ export class PuestosComponent implements OnInit, OnDestroy {
       0
     );
   }
+
+
+  // Cantidad de áreas que están inactivas
+  get areasInactivas(): number {
+    return this.puestos.filter(
+      puesto => !puesto.Activo
+    ).length;
+  }
+
+  // Cantidad total de empleados activos
+  get personalActivoTotal(): number {
+    return this.puestos.reduce(
+      (total, puesto) => total + puesto.PersonalActivo,
+      0
+    );
+  }
+
+  // Cantidad total de empleados inactivos
+  get personalInactivoTotal(): number {
+    return this.puestos.reduce(
+      (total, puesto) => total + puesto.PersonalInactivo,
+      0
+    );
+  }
+
+  // Total de personas asignadas a un puesto
+  obtenerTotalPersonal(puesto: Puesto): number {
+    return puesto.PersonalActivo + puesto.PersonalInactivo;
+  }
+
 
   // CONSULTAR PUESTOS
 
@@ -135,9 +248,9 @@ export class PuestosComponent implements OnInit, OnDestroy {
     const peticion = this.editandoId === null
       ? this.servicio.crearPuesto(nombre)
       : this.servicio.editarPuesto(
-          this.editandoId,
-          nombre
-        );
+        this.editandoId,
+        nombre
+      );
 
     peticion.subscribe({
 

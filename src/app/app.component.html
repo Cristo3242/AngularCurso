@@ -1,38 +1,114 @@
 
-<div class="layout">
+<div
+  class="layout"
+  [class.menu-cerrado]="!menuAbierto"
+>
 
-  <aside class="sidebar">
+  <!-- FONDO OSCURO SOLO EN CELULAR -->
+
+  @if (menuAbierto) {
+    <div
+      class="menu-overlay"
+      (click)="cerrarMenu()"
+      aria-hidden="true">
+    </div>
+  }
+
+  <!-- MENÚ LATERAL -->
+
+  <aside
+    class="sidebar"
+    id="menuPrincipal"
+    [class.sidebar-oculta]="!menuAbierto"
+    [attr.aria-hidden]="!menuAbierto"
+  >
 
     <div class="marca">
-      <span class="marca-icono">RH</span>
 
-      <div>
-        <strong>Gestión RH</strong>
-        <small>Administración</small>
+      <div class="marca-informacion">
+        <span class="marca-icono">RH</span>
+
+        <div>
+          <strong>Gestión RH</strong>
+          <small>Administración de personal</small>
+        </div>
       </div>
+
+      <button
+        type="button"
+        class="btn-cerrar-menu"
+        (click)="cerrarMenu()"
+        aria-label="Cerrar menú">
+        &times;
+      </button>
+
     </div>
 
-    <nav aria-label="Menú principal">
+    <nav aria-label="Navegación principal">
 
       <a
         routerLink="/empleados"
         routerLinkActive="seleccionado"
-        [routerLinkActiveOptions]="{ exact: false }">
-        Usuarios
+        [routerLinkActiveOptions]="{ exact: false }"
+        [attr.tabindex]="menuAbierto ? 0 : -1"
+      >
+
+        <span class="menu-icono">👥</span>
+        <span>Usuarios</span>
+
       </a>
 
       <a
         routerLink="/puestos"
-        routerLinkActive="seleccionado">
-        Puestos
+        routerLinkActive="seleccionado"
+        [attr.tabindex]="menuAbierto ? 0 : -1"
+      >
+
+        <span class="menu-icono">🏢</span>
+        <span>Puestos</span>
+
       </a>
 
     </nav>
 
+   
+
   </aside>
 
-  <main class="contenido">
-    <router-outlet></router-outlet>
-  </main>
+  <!-- CONTENIDO PRINCIPAL -->
+
+  <div class="zona-principal">
+
+    <!-- BARRA SUPERIOR -->
+
+    <header class="barra-superior">
+
+      <button
+        type="button"
+        class="btn-menu"
+        (click)="alternarMenu()"
+        [attr.aria-expanded]="menuAbierto"
+        aria-controls="menuPrincipal"
+        [attr.aria-label]="menuAbierto ? 'Ocultar menú' : 'Mostrar menú'"
+      >
+        <span aria-hidden="true">
+          &#9776;
+        </span>
+      </button>
+
+      <div class="titulo-sistema">
+        <strong>Sistema de Gestión RH</strong>
+        <small>Administración y control de personal</small>
+      </div>
+
+    </header>
+
+    <!-- VISTAS ANGULAR -->
+
+    <main class="contenido">
+      <router-outlet></router-outlet>
+    </main>
+
+  </div>
 
 </div>

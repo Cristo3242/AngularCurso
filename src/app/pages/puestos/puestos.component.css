@@ -1,165 +1,337 @@
 
+/* ==========================================
+   CONTENEDOR PRINCIPAL
+   ========================================== */
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
 .puestos-container {
+  width: 100%;
   max-width: 1250px;
   margin: 30px auto;
   padding: 20px;
+  box-sizing: border-box;
+
   font-family: 'Segoe UI', Arial, sans-serif;
   color: #1e293b;
 }
 
+/* ==========================================
+   ENCABEZADO
+   ========================================== */
+
 .encabezado {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 14px;
-  margin-bottom: 24px;
+  gap: 16px;
+
+  margin-bottom: 25px;
 }
 
 .encabezado h1 {
-  font-size: 27px;
-  color: #0f172a;
   margin: 0;
+
+  font-size: 27px;
+  font-weight: 700;
+  color: #0f172a;
 }
 
 .encabezado p {
+  margin: 7px 0 0;
+
   color: #64748b;
   font-size: 14px;
-  margin: 6px 0 0;
+  line-height: 1.5;
 }
 
-/* INDICADORES */
+/* ==========================================
+   INDICADORES
+   ========================================== */
 
 .resumen {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 15px;
-  margin-bottom: 24px;
+  gap: 16px;
+
+  margin-bottom: 25px;
 }
 
-.resumen article,
-.panel {
-  background: white;
+.resumen article {
+  min-width: 0;
+  padding: 23px;
+
+  background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
-  padding: 22px;
-  box-shadow: 0 4px 14px #0000000b;
+
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-.resumen span {
+.resumen article:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.07);
+}
+
+.resumen article span {
   display: block;
+  margin-bottom: 11px;
+
   color: #64748b;
   font-size: 13px;
-  margin-bottom: 8px;
+  font-weight: 500;
+  line-height: 1.5;
 }
 
-.resumen strong {
+.resumen article strong {
+  display: block;
+
+  color: #0f172a;
   font-size: 30px;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
-/* FORMULARIO */
+/* ==========================================
+   PANELES Y FORMULARIOS
+   ========================================== */
 
 .panel {
+  min-width: 0;
+  padding: 24px;
   margin-bottom: 23px;
+
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
 }
 
 .panel h2 {
+  margin: 0 0 20px;
+
+  color: #0f172a;
   font-size: 20px;
-  margin: 0 0 18px;
+  font-weight: 650;
 }
 
 .formulario label {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 9px;
+
+  color: #475569;
   font-size: 14px;
   font-weight: 600;
 }
 
 .formulario input {
+  width: 100%;
   max-width: 500px;
-  padding: 11px 12px;
+  min-width: 0;
+  box-sizing: border-box;
+
+  padding: 12px 14px;
+
+  background: #ffffff;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
+
+  color: #0f172a;
+  font-family: inherit;
   font-size: 14px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
+
+.formulario input:focus {
+  outline: none;
+
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.formulario input::placeholder {
+  color: #94a3b8;
+}
+
+/* ==========================================
+   ACCIONES
+   ========================================== */
 
 .acciones {
   display: flex;
-  gap: 10px;
-  margin-top: 18px;
+  align-items: center;
   flex-wrap: wrap;
+  gap: 11px;
+
+  margin-top: 20px;
 }
 
-/* BOTONES */
+/* ==========================================
+   BOTONES
+   ========================================== */
 
 .primario,
 .secundario,
 .editar,
 .peligro {
-  padding: 10px 14px;
-  border: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  padding: 10px 15px;
+
+  border: 1px solid transparent;
   border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
+
+  font-family: inherit;
   font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
+
+/* BOTÓN PRINCIPAL */
 
 .primario {
   background: #2563eb;
-  color: white;
+  color: #ffffff;
 }
+
+.primario:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+/* BOTÓN SECUNDARIO */
 
 .secundario {
   background: #e2e8f0;
   color: #334155;
 }
 
+.secundario:hover:not(:disabled) {
+  background: #cbd5e1;
+}
+
+/* BOTÓN EDITAR */
+
 .editar {
   background: #dbeafe;
   color: #1d4ed8;
 }
+
+.editar:hover:not(:disabled) {
+  background: #bfdbfe;
+}
+
+/* BOTÓN DAR DE BAJA */
 
 .peligro {
   background: #fee2e2;
   color: #b91c1c;
 }
 
+.peligro:hover:not(:disabled) {
+  background: #fecaca;
+}
+
+/* BOTONES DESHABILITADOS */
+
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* TABLA */
+/* ACCESIBILIDAD */
+
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.35);
+  outline-offset: 2px;
+}
+
+/* ==========================================
+   TABLA DE PUESTOS
+   ========================================== */
 
 .tabla-contenedor {
-  overflow: auto;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+
   border: 1px solid #e2e8f0;
   border-radius: 10px;
+
+  -webkit-overflow-scrolling: touch;
 }
 
-table {
+.tabla-contenedor table {
   width: 100%;
+  min-width: 850px;
+
   border-collapse: collapse;
+  background: #ffffff;
 }
 
-th {
+/* ENCABEZADOS */
+
+.tabla-contenedor th {
+  padding: 15px 16px;
+
   background: #1e293b;
-  color: white;
+  color: #ffffff;
+
   text-align: left;
   font-size: 13px;
-  padding: 15px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
-td {
+/* CELDAS */
+
+.tabla-contenedor td {
+  padding: 14px 16px;
+
   border-bottom: 1px solid #e2e8f0;
+
+  color: #334155;
   font-size: 13px;
-  padding: 14px;
+  vertical-align: middle;
 }
 
-tbody tr:nth-child(even) {
+/* FILAS */
+
+.tabla-contenedor tbody tr:nth-child(even) {
   background: #f8fafc;
 }
+
+.tabla-contenedor tbody tr:hover {
+  background: #eff6ff;
+}
+
+.tabla-contenedor tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ACCIONES DE LA TABLA */
 
 .acciones-tabla {
   white-space: nowrap;
@@ -169,111 +341,498 @@ tbody tr:nth-child(even) {
   margin: 3px;
 }
 
+/* ==========================================
+   ETIQUETAS DE ESTADO
+   ========================================== */
+
 .estado {
   display: inline-block;
+
+  padding: 6px 11px;
+
   background: #f1f5f9;
-  color: #475569;
-  padding: 6px 9px;
   border-radius: 20px;
+
+  color: #475569;
   font-size: 12px;
   font-weight: 600;
+  white-space: nowrap;
 }
+
+/* ÁREA ACTIVA */
 
 .estado.activo {
   background: #dcfce7;
   color: #166534;
 }
 
-.nota {
-  color: #64748b;
-  font-size: 12px;
-  margin: 15px 0 0;
-}
 
-/* CONFIRMACIÓN */
+/* ==========================================
+   MODAL DE CONFIRMACIÓN
+   ========================================== */
 
 .modal-fondo {
   position: fixed;
   inset: 0;
-  background: #0f172a99;
   z-index: 1000;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   padding: 20px;
+  box-sizing: border-box;
+
+  background: rgba(15, 23, 42, 0.60);
 }
 
 .modal {
-  width: min(440px, 100%);
+  width: 100%;
+  max-width: 440px;
   box-sizing: border-box;
-  padding: 26px;
-  background: white;
-  border-radius: 13px;
-  box-shadow: 0 17px 50px #0003;
+
+  padding: 28px;
+
+  background: #ffffff;
+  border-radius: 14px;
+
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.22);
 }
 
 .modal h2 {
-  margin: 0 0 10px;
+  margin: 0 0 13px;
+
+  color: #0f172a;
   font-size: 21px;
 }
 
 .modal p {
-  line-height: 1.5;
+  margin: 0;
+
   color: #475569;
+  font-size: 14px;
+  line-height: 1.6;
 }
 
-/* TOAST */
+.modal .acciones {
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+/* ==========================================
+   NOTIFICACIONES TOAST
+   ========================================== */
 
 .toast {
   position: fixed;
   top: 22px;
   right: 22px;
   z-index: 1100;
-  max-width: min(400px, calc(100vw - 44px));
+
   display: flex;
-  gap: 13px;
+  justify-content: space-between;
   align-items: center;
-  background: white;
+  gap: 14px;
+
+  width: min(420px, calc(100vw - 44px));
+  box-sizing: border-box;
+
+  padding: 15px 18px;
+
+  background: #ffffff;
   border: 1px solid #e2e8f0;
   border-left: 5px solid;
-  padding: 15px;
-  border-radius: 9px;
-  box-shadow: 0 10px 30px #0002;
+  border-radius: 10px;
+
+  color: #1e293b;
+  font-size: 14px;
+  line-height: 1.5;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14);
+
+  animation: aparecerToast 0.25s ease-out;
 }
+
+/* TOAST ÉXITO */
 
 .toast.exito {
   border-left-color: #16a34a;
 }
 
+/* TOAST ERROR */
+
 .toast.error {
   border-left-color: #dc2626;
 }
+
+/* TOAST ADVERTENCIA */
 
 .toast.advertencia {
   border-left-color: #f59e0b;
 }
 
+/* CERRAR TOAST */
+
 .toast button {
-  background: none;
-  border: 0;
+  flex-shrink: 0;
+
+  padding: 3px 7px;
+
+  background: transparent;
+  border: none;
+
+  color: #64748b;
+  font-size: 21px;
   cursor: pointer;
-  font-size: 20px;
 }
 
-@media (max-width: 720px) {
-  .puestos-container {
-    padding: 12px;
+.toast button:hover {
+  color: #0f172a;
+}
+
+@keyframes aparecerToast {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
   }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ==========================================
+   TABLETS
+   ========================================== */
+
+@media (max-width: 1050px) {
 
   .resumen {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .panel {
-    padding: 15px;
+  .puestos-container {
+    padding: 18px;
+  }
+
+}
+
+/* ==========================================
+   CELULARES
+   ========================================== */
+
+@media (max-width: 720px) {
+
+  .puestos-container {
+    margin: 15px auto;
+    padding: 13px;
+  }
+
+  .encabezado {
+    align-items: flex-start;
   }
 
   .encabezado h1 {
     font-size: 23px;
   }
+
+  .encabezado p {
+    font-size: 13px;
+  }
+
+  .panel {
+    padding: 17px;
+  }
+
+  .resumen {
+    gap: 12px;
+  }
+
+  .resumen article {
+    padding: 17px;
+  }
+
+  .resumen article strong {
+    font-size: 26px;
+  }
+
+  .tabla-contenedor th,
+  .tabla-contenedor td {
+    padding: 12px 13px;
+  }
+
+}
+
+/* ==========================================
+   CELULARES PEQUEÑOS
+   ========================================== */
+
+@media (max-width: 550px) {
+
+  .resumen {
+    grid-template-columns: 1fr;
+  }
+
+  .encabezado {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .encabezado > .primario {
+    align-self: flex-start;
+  }
+
+  .modal {
+    padding: 22px;
+  }
+
+  .modal .acciones {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .modal .acciones button {
+    width: 100%;
+  }
+
+  .toast {
+    top: 15px;
+    right: 15px;
+    width: calc(100vw - 30px);
+  }
+
+}
+
+/* ==========================================
+   MOVIMIENTO REDUCIDO
+   ========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .resumen article,
+  .primario,
+  .secundario,
+  .editar,
+  .peligro {
+    transition: none;
+  }
+
+  .toast {
+    animation: none;
+  }
+
+}
+
+
+/* ==========================================
+   ENCABEZADO DEL CATÁLOGO
+   ========================================== */
+
+.catalogo-encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+
+  margin-bottom: 20px;
+}
+
+.catalogo-encabezado h2 {
+  margin: 0;
+}
+
+.catalogo-subtitulo {
+  margin: 6px 0 0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* ==========================================
+   BOTÓN DE FILTROS
+   ========================================== */
+
+.btn-filtros {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 9px;
+
+  padding: 10px 16px;
+
+  background: #eff6ff;
+  color: #1d4ed8;
+
+  border: 1px solid #bfdbfe;
+  border-radius: 9px;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-filtros:hover {
+  background: #dbeafe;
+}
+
+/* ==========================================
+   PANEL DE FILTROS
+   ========================================== */
+
+.filtros-puestos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+
+  margin-bottom: 20px;
+  padding: 22px;
+
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.filtro-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+
+.filtro-etiqueta {
+  color: #475569;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ==========================================
+   CASILLAS
+   ========================================== */
+
+.checkbox-grupo {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  min-height: 43px;
+}
+
+.checkbox-opcion {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 10px 14px;
+
+  background: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-opcion:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+
+.checkbox-opcion input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  margin: 0;
+
+  accent-color: #2563eb;
+  cursor: pointer;
+}
+
+.checkbox-opcion span {
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ==========================================
+   SELECTORES
+   ========================================== */
+
+.filtro-grupo select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+
+  padding: 11px 13px;
+
+  background: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+
+  color: #334155;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.filtro-grupo select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px #2563eb1a;
+}
+
+/* ==========================================
+   ACCIONES
+   ========================================== */
+
+.filtro-acciones {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ==========================================
+   TABLA SIN RESULTADOS
+   ========================================== */
+
+.tabla-vacia {
+  text-align: center;
+  padding: 28px 15px !important;
+
+  color: #64748b !important;
+  font-size: 13px;
+}
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+
+@media (max-width: 720px) {
+
+  .filtros-puestos {
+    grid-template-columns: 1fr;
+    padding: 16px;
+    gap: 17px;
+  }
+
+  .filtro-acciones {
+    justify-content: flex-start;
+  }
+
+}
+
+@media (max-width: 480px) {
+
+  .catalogo-encabezado {
+    align-items: flex-start;
+  }
+
+  .checkbox-opcion {
+    padding: 9px 12px;
+  }
+
+  .filtro-acciones button {
+    width: 100%;
+  }
+
 }

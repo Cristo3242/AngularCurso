@@ -1,21 +1,17 @@
-
 <div class="puestos-container">
 
   <header class="encabezado">
     <div>
       <h1>Administración de puestos</h1>
-      <p>Áreas, personal asignado y bajas históricas</p>
     </div>
 
-    <button
-      type="button"
-      class="primario"
-      (click)="nuevo()">
+    <button type="button" class="primario" (click)="nuevo()">
       + Nuevo puesto
     </button>
   </header>
 
   <!-- INDICADORES -->
+
 
   <section class="resumen">
 
@@ -30,61 +26,218 @@
     </article>
 
     <article>
-      <span>Bajas históricas de personal</span>
+      <span>Áreas inactivas</span>
+      <strong>{{ areasInactivas }}</strong>
+    </article>
+
+    <article>
+      <span>Personal activo</span>
+      <strong>{{ personalActivoTotal }}</strong>
+    </article>
+
+    <article>
+      <span>Personal inactivo</span>
+      <strong>{{ personalInactivoTotal }}</strong>
+    </article>
+
+    <article>
+      <span>Bajas históricas</span>
       <strong>{{ bajasHistoricas }}</strong>
     </article>
 
   </section>
 
+
   <!-- FORMULARIO -->
 
   @if (mostrarFormulario) {
 
-    <section class="panel formulario">
+  <section class="panel formulario">
 
-      <h2>
-        {{ editandoId === null
-          ? 'Nuevo puesto'
-          : 'Editar puesto' }}
-      </h2>
+    <h2>
+      {{ editandoId === null
+      ? 'Nuevo puesto'
+      : 'Editar puesto' }}
+    </h2>
 
-      <label>
-        Nombre del puesto / área
+    <label>
+      Nombre del puesto / área
 
-        <input
-          type="text"
-          [(ngModel)]="nombrePuesto"
-          maxlength="50"
-          placeholder="Ej. Soporte técnico" />
-      </label>
+      <input type="text" [(ngModel)]="nombrePuesto" maxlength="50" placeholder="Ej. Soporte técnico" />
+    </label>
 
-      <div class="acciones">
+    <div class="acciones">
 
-        <button
-          type="button"
-          class="primario"
-          (click)="guardar()"
-          [disabled]="guardando">
-          {{ guardando ? 'Guardando...' : 'Guardar' }}
-        </button>
+      <button type="button" class="primario" (click)="guardar()" [disabled]="guardando">
+        {{ guardando ? 'Guardando...' : 'Guardar' }}
+      </button>
 
-        <button
-          type="button"
-          class="secundario"
-          (click)="cancelar()"
-          [disabled]="guardando">
-          Cancelar
-        </button>
+      <button type="button" class="secundario" (click)="cancelar()" [disabled]="guardando">
+        Cancelar
+      </button>
 
-      </div>
-    </section>
+    </div>
+  </section>
   }
 
   <!-- CATÁLOGO -->
 
-  <section class="panel">
+  <
+<section class="panel">
 
-    <h2>Catálogo de puestos</h2>
+  <!-- ENCABEZADO DE TABLA -->
+
+  <header class="catalogo-encabezado">
+
+    <div>
+      <h2>Catálogo de puestos</h2>
+
+      <p class="catalogo-subtitulo">
+        Mostrando {{ puestosFiltrados.length }}
+        de {{ puestos.length }} áreas
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="btn-filtros"
+      (click)="mostrarFiltros = !mostrarFiltros"
+      [attr.aria-expanded]="mostrarFiltros"
+      aria-controls="panelFiltrosPuestos">
+
+      ☷ Filtros {{ mostrarFiltros ? '▲' : '▼' }}
+
+    </button>
+
+  </header>
+
+  <!-- FILTROS DESPLEGABLES -->
+
+  @if (mostrarFiltros) {
+
+    <div
+      id="panelFiltrosPuestos"
+      class="filtros-puestos">
+
+      <!-- ESTADO DEL ÁREA -->
+
+      <div class="filtro-grupo">
+
+        <label class="filtro-etiqueta">
+          Estado del área
+        </label>
+
+        <div class="checkbox-grupo">
+
+          <label class="checkbox-opcion">
+
+            <input
+              type="checkbox"
+              [(ngModel)]="filtroActivas"
+              (ngModelChange)="cambiarFiltroEstado()" />
+
+            <span>Activas</span>
+
+          </label>
+
+          <label class="checkbox-opcion">
+
+            <input
+              type="checkbox"
+              [(ngModel)]="filtroInactivas"
+              (ngModelChange)="cambiarFiltroEstado()" />
+
+            <span>Inactivas</span>
+
+          </label>
+
+        </div>
+
+      </div>
+
+      <!-- PERSONAL ASIGNADO -->
+
+      <div class="filtro-grupo">
+
+        <label
+          class="filtro-etiqueta"
+          for="filtroPersonal">
+
+          Personal asignado
+
+        </label>
+
+        <select
+          id="filtroPersonal"
+          [(ngModel)]="filtroPersonal">
+
+          <option value="todos">
+            Todos
+          </option>
+
+          <option value="con">
+            Con personal
+          </option>
+
+          <option value="sin">
+            Sin personal
+          </option>
+
+        </select>
+
+      </div>
+
+      <!-- BAJAS HISTÓRICAS -->
+
+      <div class="filtro-grupo">
+
+        <label
+          class="filtro-etiqueta"
+          for="filtroBajas">
+
+          Bajas históricas
+
+        </label>
+
+        <select
+          id="filtroBajas"
+          [(ngModel)]="filtroBajas">
+
+          <option value="todos">
+            Todas
+          </option>
+
+          <option value="con">
+            Con bajas
+          </option>
+
+          <option value="sin">
+            Sin bajas
+          </option>
+
+        </select>
+
+      </div>
+
+      <!-- LIMPIAR FILTROS -->
+
+      <div class="filtro-acciones">
+
+        <button
+          type="button"
+          class="secundario"
+          (click)="limpiarFiltros()">
+
+          Limpiar filtros
+
+        </button>
+
+      </div>
+
+    </div>
+
+  }
+
 
     <div class="tabla-contenedor">
 
@@ -93,6 +246,7 @@
         <thead>
           <tr>
             <th>Puesto / área</th>
+            <th>Total de personal</th>
             <th>Activos</th>
             <th>Inactivos</th>
             <th>Bajas históricas</th>
@@ -103,55 +257,57 @@
 
         <tbody>
 
-          @for (p of puestos; track p.PuestoID) {
+          @for (p of puestosFiltrados; track p.PuestoID) {
 
-            <tr>
+          <tr>
 
-              <td>{{ p.NombrePuesto }}</td>
+            <td>{{ p.NombrePuesto }}</td>
 
-              <td>{{ p.PersonalActivo }}</td>
+            <td>
+              <strong>
+                {{ obtenerTotalPersonal(p) }}
+              </strong>
+            </td>
 
-              <td>{{ p.PersonalInactivo }}</td>
+            <td>{{ p.PersonalActivo }}</td>
 
-              <td>{{ p.CantidadBajas }}</td>
+            <td>{{ p.PersonalInactivo }}</td>
 
-              <td>
-                <span
-                  class="estado"
-                  [class.activo]="p.Activo">
-                  {{ p.Activo ? 'Activo' : 'Inactivo' }}
-                </span>
-              </td>
+            <td>{{ p.CantidadBajas }}</td>
 
-              <td class="acciones-tabla">
+            <td>
+              <span class="estado" [class.activo]="p.Activo">
+                {{ p.Activo ? 'Activo' : 'Inactivo' }}
+              </span>
+            </td>
 
-                <button
-                  type="button"
-                  class="editar"
-                  (click)="editar(p)">
-                  Editar
-                </button>
+            <td class="acciones-tabla">
 
-                <button
-                  type="button"
-                  [class]="p.Activo ? 'peligro' : 'primario'"
-                  (click)="solicitarCambio(p)">
-                  {{ p.Activo ? 'Dar de baja' : 'Reactivar' }}
-                </button>
+              <button type="button" class="editar" (click)="editar(p)">
+                Editar
+              </button>
 
-              </td>
+              <button type="button" [class]="p.Activo ? 'peligro' : 'primario'" (click)="solicitarCambio(p)">
+                {{ p.Activo ? 'Dar de baja' : 'Reactivar' }}
+              </button>
 
-            </tr>
+            </td>
+
+          </tr>
 
           } @empty {
 
-            <tr>
-              <td colspan="6">
-                {{ cargando
-                  ? 'Cargando...'
-                  : 'No hay puestos registrados.' }}
-              </td>
-            </tr>
+          <tr>
+    <td colspan="7" class="tabla-vacia">
+
+      @if (cargando) {
+        Cargando puestos...
+      } @else if (puestos.length === 0) {
+        No hay puestos registrados.
+      } @else {
+        No existen puestos que coincidan
+        con los filtros seleccionados.
+      }
 
           }
 
@@ -161,87 +317,62 @@
 
     </div>
 
-    <p class="nota">
-      Dar de baja un área no elimina empleados ni cambia
-      automáticamente su estado. Se bloquean nuevas
-      asignaciones a esa área.
-    </p>
-
   </section>
 
   <!-- CONFIRMACIÓN -->
 
   @if (puestoPorCambiar) {
 
-    <div class="modal-fondo">
+  <div class="modal-fondo">
 
-      <section
-        class="modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="tituloPuesto">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="tituloPuesto">
 
-        <h2 id="tituloPuesto">
-          {{ puestoPorCambiar.Activo
-            ? '¿Dar de baja el área?'
-            : '¿Reactivar el área?' }}
-        </h2>
+      <h2 id="tituloPuesto">
+        {{ puestoPorCambiar.Activo
+        ? '¿Dar de baja el área?'
+        : '¿Reactivar el área?' }}
+      </h2>
 
-        <p>
-          <strong>
-            {{ puestoPorCambiar.NombrePuesto }}
-          </strong>
+      <p>
+        <strong>
+          {{ puestoPorCambiar.NombrePuesto }}
+        </strong>
 
-          Sus empleados conservarán su estado actual.
-        </p>
+        Sus empleados conservarán su estado actual.
+      </p>
 
-        <div class="acciones">
+      <div class="acciones">
 
-          <button
-            type="button"
-            class="secundario"
-            (click)="cancelarCambio()"
-            [disabled]="cambiando">
-            Cancelar
-          </button>
+        <button type="button" class="secundario" (click)="cancelarCambio()" [disabled]="cambiando">
+          Cancelar
+        </button>
 
-          <button
-            type="button"
-            [class]="puestoPorCambiar.Activo ? 'peligro' : 'primario'"
-            (click)="confirmarCambio()"
-            [disabled]="cambiando">
-            {{ cambiando ? 'Procesando...' : 'Confirmar' }}
-          </button>
+        <button type="button" [class]="puestoPorCambiar.Activo ? 'peligro' : 'primario'" (click)="confirmarCambio()"
+          [disabled]="cambiando">
+          {{ cambiando ? 'Procesando...' : 'Confirmar' }}
+        </button>
 
-        </div>
+      </div>
 
-      </section>
+    </section>
 
-    </div>
+  </div>
   }
 
   <!-- TOAST -->
 
   @if (mensajeToast) {
 
-    <div
-      class="toast"
-      [class.exito]="tipoToast === 'exito'"
-      [class.error]="tipoToast === 'error'"
-      [class.advertencia]="tipoToast === 'advertencia'"
-      role="status"
-      aria-live="polite">
+  <div class="toast" [class.exito]="tipoToast === 'exito'" [class.error]="tipoToast === 'error'"
+    [class.advertencia]="tipoToast === 'advertencia'" role="status" aria-live="polite">
 
-      {{ mensajeToast }}
+    {{ mensajeToast }}
 
-      <button
-        type="button"
-        (click)="cerrarToast()"
-        aria-label="Cerrar notificación">
-        ×
-      </button>
+    <button type="button" (click)="cerrarToast()" aria-label="Cerrar notificación">
+      ×
+    </button>
 
-    </div>
+  </div>
   }
 
 </div>

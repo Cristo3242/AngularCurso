@@ -148,9 +148,11 @@
   </section>
   }
 
-  <!-- INDICADORES -->
+  <!-- INDICADORES GENERALES -->
 
-  <section class="indicadores" aria-label="Indicadores de personal">
+  <section class="indicadores" aria-label="Indicadores de personal y áreas">
+
+    <!-- ÁREAS TOTALES -->
 
     <article class="indicador">
       <span>Áreas totales</span>
@@ -159,12 +161,34 @@
       </strong>
     </article>
 
+    <!-- ÁREAS ACTIVAS -->
+
+    <article class="indicador">
+      <span>Áreas activas</span>
+      <strong>
+        {{ estadisticas?.areasActivas ?? '—' }}
+      </strong>
+    </article>
+
+    <!-- ÁREAS INACTIVAS -->
+
+    <article class="indicador">
+      <span>Áreas inactivas</span>
+      <strong>
+        {{ estadisticas ? areasInactivas : '—' }}
+      </strong>
+    </article>
+
+    <!-- PERSONAL ACTIVO -->
+
     <article class="indicador">
       <span>Personal activo</span>
       <strong>
         {{ estadisticas?.personalActivo ?? '—' }}
       </strong>
     </article>
+
+    <!-- PERSONAL INACTIVO -->
 
     <article class="indicador">
       <span>Personal inactivo</span>
@@ -173,14 +197,17 @@
       </strong>
     </article>
 
+    <!-- BAJAS HISTÓRICAS -->
+
     <article class="indicador">
-      <span>Bajas históricas</span>
+      <span>Bajas históricas de personal</span>
       <strong>
         {{ estadisticas?.cantidadBajas ?? '—' }}
       </strong>
     </article>
 
   </section>
+
 
   <!-- TABLA Y FILTROS -->
 
@@ -195,122 +222,101 @@
       </button>
     </header>
 
-    
-@if (mostrarFiltros) {
 
-  <div class="filtros-desplegables">
+    @if (mostrarFiltros) {
 
-    <!-- BUSCADOR GENERAL -->
+    <div class="filtros-desplegables">
 
-    <div class="form-group filtro-busqueda">
+      <!-- BUSCADOR GENERAL -->
 
-      <label for="buscarEmpleado">
-        Buscar empleado
-      </label>
+      <div class="form-group filtro-busqueda">
 
-      <div class="buscador-contenedor">
+        <label for="buscarEmpleado">
+          Buscar empleado
+        </label>
 
-        <span class="buscador-icono" aria-hidden="true">
-          &#9906;
-        </span>
+        <div class="buscador-contenedor">
 
-        <input
-          id="buscarEmpleado"
-          type="search"
-          [(ngModel)]="filtroBusqueda"
-          (ngModelChange)="aplicarBusqueda()"
-          placeholder="Nombre, apellido o número de nómina..."
-          autocomplete="off"
-        />
+          <span class="buscador-icono" aria-hidden="true">
+            &#9906;
+          </span>
+
+          <input id="buscarEmpleado" type="search" [(ngModel)]="filtroBusqueda" (ngModelChange)="aplicarBusqueda()"
+            placeholder="Nombre, apellido o número de nómina..." autocomplete="off" />
+
+        </div>
 
       </div>
 
-    </div>
+      <!-- FILTRO POR PUESTO -->
 
-    <!-- FILTRO POR PUESTO -->
+      <div class="form-group filtro-puesto">
 
-    <div class="form-group filtro-puesto">
+        <label for="filtrarPuesto">
+          Puesto / área
+        </label>
 
-      <label for="filtrarPuesto">
-        Puesto / área
-      </label>
+        <select id="filtrarPuesto" [(ngModel)]="filtroPuesto" (ngModelChange)="aplicarFiltros()">
 
-      <select
-        id="filtrarPuesto"
-        [(ngModel)]="filtroPuesto"
-        (ngModelChange)="aplicarFiltros()">
+          <option [ngValue]="0">
+            Todos los puestos
+          </option>
 
-        <option [ngValue]="0">
-          Todos los puestos
-        </option>
-
-        @for (p of puestos; track p.PuestoID) {
+          @for (p of puestos; track p.PuestoID) {
           <option [ngValue]="p.PuestoID">
             {{ p.NombrePuesto }}
           </option>
-        }
+          }
 
-      </select>
+        </select>
 
-    </div>
+      </div>
 
-    <!-- FILTROS POR ESTADO -->
+      <!-- FILTROS POR ESTADO -->
 
-    <div class="form-group filtro-estado">
+      <div class="form-group filtro-estado">
 
-      <label>
-        Estado del personal
-      </label>
-
-      <div class="checkbox-grupo">
-
-        <label class="checkbox-opcion">
-
-          <input
-            type="checkbox"
-            [(ngModel)]="filtroActivos"
-            (ngModelChange)="cambiarFiltroEstado()"
-          />
-
-          <span>Activos</span>
-
+        <label>
+          Estado del personal
         </label>
 
-        <label class="checkbox-opcion">
+        <div class="checkbox-grupo">
 
-          <input
-            type="checkbox"
-            [(ngModel)]="filtroInactivos"
-            (ngModelChange)="cambiarFiltroEstado()"
-          />
+          <label class="checkbox-opcion">
 
-          <span>Inactivos</span>
+            <input type="checkbox" [(ngModel)]="filtroActivos" (ngModelChange)="cambiarFiltroEstado()" />
 
-        </label>
+            <span>Activos</span>
+
+          </label>
+
+          <label class="checkbox-opcion">
+
+            <input type="checkbox" [(ngModel)]="filtroInactivos" (ngModelChange)="cambiarFiltroEstado()" />
+
+            <span>Inactivos</span>
+
+          </label>
+
+        </div>
+
+      </div>
+
+      <!-- LIMPIAR -->
+
+      <div class="filtro-acciones">
+
+        <button type="button" class="btn-cancel" (click)="limpiarFiltros()">
+
+          Limpiar filtros
+
+        </button>
 
       </div>
 
     </div>
 
-    <!-- LIMPIAR -->
-
-    <div class="filtro-acciones">
-
-      <button
-        type="button"
-        class="btn-cancel"
-        (click)="limpiarFiltros()">
-
-        Limpiar filtros
-
-      </button>
-
-    </div>
-
-  </div>
-
-}
-
+    }
 
     <div class="tabla-contenedor">
 
@@ -323,6 +329,7 @@
             <th>Puesto</th>
             <th>Estado</th>
             <th>Acciones</th>
+            <th>Estado del área</th>
           </tr>
         </thead>
 
@@ -343,6 +350,16 @@
             </td>
 
             <td>{{ e.NombrePuesto }}</td>
+
+            <td>
+              <span class="etiqueta-estado" [class.activo]="areaActiva(e.PuestoID)">
+
+                {{ areaActiva(e.PuestoID)
+                ? 'Activa'
+                : 'Inactiva' }}
+
+              </span>
+            </td>
 
             <td>
               <span class="etiqueta-estado" [class.activo]="e.Activo">
@@ -366,7 +383,7 @@
 
           } @empty {
           <tr>
-            <td colspan="5">
+            <td colspan="6">
               {{ cargando
               ? 'Cargando empleados...'
               : 'No se encontraron empleados.' }}
@@ -480,7 +497,6 @@
     <button type="button" class="toast-cerrar" (click)="cerrarToast()" aria-label="Cerrar notificación">
       ×
     </button>
-
   </div>
   }
 

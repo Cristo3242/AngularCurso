@@ -86,6 +86,23 @@ export class EmpleadosComponent implements OnInit, OnDestroy {
   fotoActualDisponible = false;
 
 
+  get areasInactivas(): number {
+  if (!this.estadisticas) {
+    return 0;
+  }
+
+  return this.estadisticas.areasTotal -
+         this.estadisticas.areasActivas;
+}
+
+areaActiva(puestoID: number): boolean {
+  const puesto = this.puestos.find(
+    p => p.PuestoID === puestoID
+  );
+
+  return puesto?.Activo ?? false;
+}
+
 cambiarFiltroEstado(): void {
 
   // Evitar que se desmarquen las dos casillas
