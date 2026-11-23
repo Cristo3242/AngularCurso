@@ -12,7 +12,6 @@
 
   <!-- INDICADORES -->
 
-
   <section class="resumen">
 
     <article>
@@ -82,42 +81,35 @@
 
   <!-- CATÁLOGO -->
 
-  <
-<section class="panel">
+  <section class="panel">
 
-  <!-- ENCABEZADO DE TABLA -->
+    <!-- ENCABEZADO DE TABLA -->
 
-  <header class="catalogo-encabezado">
+    <header class="catalogo-encabezado">
 
-    <div>
-      <h2>Catálogo de puestos</h2>
+      <div>
+        <h2>Catálogo de puestos</h2>
 
-      <p class="catalogo-subtitulo">
-        Mostrando {{ puestosFiltrados.length }}
-        de {{ puestos.length }} áreas
-      </p>
-    </div>
+        <p class="catalogo-subtitulo">
+          Mostrando {{ puestosFiltrados.length }}
+          de {{ puestos.length }} áreas
+        </p>
+      </div>
 
-    <button
-      type="button"
-      class="btn-filtros"
-      (click)="mostrarFiltros = !mostrarFiltros"
-      [attr.aria-expanded]="mostrarFiltros"
-      aria-controls="panelFiltrosPuestos">
+      <button type="button" class="btn-filtros" (click)="mostrarFiltros = !mostrarFiltros"
+        [attr.aria-expanded]="mostrarFiltros" aria-controls="panelFiltrosPuestos">
 
-      ☷ Filtros {{ mostrarFiltros ? '▲' : '▼' }}
+        ☷ Filtros {{ mostrarFiltros ? '▲' : '▼' }}
 
-    </button>
+      </button>
 
-  </header>
+    </header>
 
-  <!-- FILTROS DESPLEGABLES -->
+    <!-- FILTROS DESPLEGABLES -->
 
-  @if (mostrarFiltros) {
+    @if (mostrarFiltros) {
 
-    <div
-      id="panelFiltrosPuestos"
-      class="filtros-puestos">
+    <div id="panelFiltrosPuestos" class="filtros-puestos">
 
       <!-- ESTADO DEL ÁREA -->
 
@@ -131,10 +123,7 @@
 
           <label class="checkbox-opcion">
 
-            <input
-              type="checkbox"
-              [(ngModel)]="filtroActivas"
-              (ngModelChange)="cambiarFiltroEstado()" />
+            <input type="checkbox" [(ngModel)]="filtroActivas" (ngModelChange)="cambiarFiltroEstado()" />
 
             <span>Activas</span>
 
@@ -142,10 +131,7 @@
 
           <label class="checkbox-opcion">
 
-            <input
-              type="checkbox"
-              [(ngModel)]="filtroInactivas"
-              (ngModelChange)="cambiarFiltroEstado()" />
+            <input type="checkbox" [(ngModel)]="filtroInactivas" (ngModelChange)="cambiarFiltroEstado()" />
 
             <span>Inactivas</span>
 
@@ -159,17 +145,13 @@
 
       <div class="filtro-grupo">
 
-        <label
-          class="filtro-etiqueta"
-          for="filtroPersonal">
+        <label class="filtro-etiqueta" for="filtroPersonal">
 
           Personal asignado
 
         </label>
 
-        <select
-          id="filtroPersonal"
-          [(ngModel)]="filtroPersonal">
+        <select id="filtroPersonal" [(ngModel)]="filtroPersonal">
 
           <option value="todos">
             Todos
@@ -191,17 +173,13 @@
 
       <div class="filtro-grupo">
 
-        <label
-          class="filtro-etiqueta"
-          for="filtroBajas">
+        <label class="filtro-etiqueta" for="filtroBajas">
 
           Bajas históricas
 
         </label>
 
-        <select
-          id="filtroBajas"
-          [(ngModel)]="filtroBajas">
+        <select id="filtroBajas" [(ngModel)]="filtroBajas">
 
           <option value="todos">
             Todas
@@ -223,10 +201,7 @@
 
       <div class="filtro-acciones">
 
-        <button
-          type="button"
-          class="secundario"
-          (click)="limpiarFiltros()">
+        <button type="button" class="secundario" (click)="limpiarFiltros()">
 
           Limpiar filtros
 
@@ -236,7 +211,7 @@
 
     </div>
 
-  }
+    }
 
 
     <div class="tabla-contenedor">
@@ -298,18 +273,18 @@
           } @empty {
 
           <tr>
-    <td colspan="7" class="tabla-vacia">
+            <td colspan="7" class="tabla-vacia">
 
-      @if (cargando) {
-        Cargando puestos...
-      } @else if (puestos.length === 0) {
-        No hay puestos registrados.
-      } @else {
-        No existen puestos que coincidan
-        con los filtros seleccionados.
-      }
+              @if (cargando) {
+              Cargando puestos...
+              } @else if (puestos.length === 0) {
+              No hay puestos registrados.
+              } @else {
+              No existen puestos que coincidan
+              con los filtros seleccionados.
+              }
 
-          }
+              }
 
         </tbody>
 
