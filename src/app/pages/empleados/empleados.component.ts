@@ -90,6 +90,8 @@ export class EmpleadosComponent implements OnInit, OnDestroy {
     return 0;
   }
 
+  
+
   return this.estadisticas.areasTotal - this.estadisticas.areasActivas;
 }
 
@@ -100,6 +102,25 @@ areaActiva(puestoID: number): boolean {
 
   return puesto?.Activo ?? false;
 }
+
+
+// Seleccionar estado desde los botones
+
+seleccionarEstadoRapido(
+  estado: EstadoFiltro
+): void {
+
+  this.filtroEstado = estado;
+
+  this.filtroActivos =
+    estado === 'todos' || estado === 'activo';
+
+  this.filtroInactivos =
+    estado === 'todos' || estado === 'inactivo';
+
+  this.aplicarFiltros();
+}
+
 
 cambiarFiltroEstado(): void {
 

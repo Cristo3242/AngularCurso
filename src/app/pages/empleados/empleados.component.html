@@ -359,121 +359,132 @@
       <h2>Lista de empleados</h2>
     </header>
 
-    <!-- FILTROS SIEMPRE VISIBLES -->
+      
+<!-- Filtros horizontales de empleados -->
 
-    <div class="filtros-desplegables">
+<div class="filtros-monitoreo">
 
-      <!-- BUSCADOR GENERAL -->
+  <!-- Estado del personal -->
 
-      <div class="form-group filtro-busqueda">
+  <div class="filtro-monitor filtro-estatus">
 
-        <label for="buscarEmpleado">
-          Buscar empleado
-        </label>
+    <span class="filtro-monitor-titulo">
+      ESTATUS
+    </span>
 
-        <div class="buscador-contenedor">
+    <div class="estatus-opciones">
 
-          <span
-            class="buscador-icono"
-            aria-hidden="true">
+      <button
+        type="button"
+        class="chip-estado"
+        [class.seleccionado]="filtroEstado === 'todos'"
+        (click)="seleccionarEstadoRapido('todos')">
 
-            &#9906;
+        <strong>
+          {{ (estadisticas?.personalActivo ?? 0) +
+             (estadisticas?.personalInactivo ?? 0) }}
+        </strong>
 
-          </span>
+        <small>Todos</small>
 
-          <input
-            id="buscarEmpleado"
-            type="search"
-            [(ngModel)]="filtroBusqueda"
-            (ngModelChange)="aplicarBusqueda()"
-            placeholder="Nombre, apellido o número de nómina..."
-            autocomplete="off" />
+      </button>
 
-        </div>
+      <button
+        type="button"
+        class="chip-estado"
+        [class.seleccionado]="filtroEstado === 'activo'"
+        (click)="seleccionarEstadoRapido('activo')">
 
-      </div>
+        <strong>
+          {{ estadisticas?.personalActivo ?? 0 }}
+        </strong>
 
-      <!-- FILTRO POR PUESTO -->
+        <small>Activos</small>
 
-      <div class="form-group filtro-puesto">
+      </button>
 
-        <label for="filtrarPuesto">
-          Puesto / área
-        </label>
+      <button
+        type="button"
+        class="chip-estado"
+        [class.seleccionado]="filtroEstado === 'inactivo'"
+        (click)="seleccionarEstadoRapido('inactivo')">
 
-        <select
-          id="filtrarPuesto"
-          [(ngModel)]="filtroPuesto"
-          (ngModelChange)="aplicarFiltros()">
+        <strong>
+          {{ estadisticas?.personalInactivo ?? 0 }}
+        </strong>
 
-          <option [ngValue]="0">
-            Todos los puestos
-          </option>
+        <small>Inactivos</small>
 
-          @for (p of puestos; track p.PuestoID) {
-
-            <option [ngValue]="p.PuestoID">
-              {{ p.NombrePuesto }}
-            </option>
-
-          }
-
-        </select>
-
-      </div>
-
-      <!-- FILTRO DE ESTADO DEL PERSONAL -->
-
-      <div class="form-group filtro-estado">
-
-        <label>
-          Estado del personal
-        </label>
-
-        <div class="checkbox-grupo">
-
-          <label class="checkbox-opcion">
-
-            <input
-              type="checkbox"
-              [(ngModel)]="filtroActivos"
-              (ngModelChange)="cambiarFiltroEstado()" />
-
-            <span>Activos</span>
-
-          </label>
-
-          <label class="checkbox-opcion">
-
-            <input
-              type="checkbox"
-              [(ngModel)]="filtroInactivos"
-              (ngModelChange)="cambiarFiltroEstado()" />
-
-            <span>Inactivos</span>
-
-          </label>
-
-        </div>
-
-      </div>
-
-      <!-- LIMPIAR FILTROS -->
-
-      <div class="filtro-acciones">
-
-        <button
-          type="button"
-          class="btn-cancel"
-          (click)="limpiarFiltros()">
-
-          Limpiar filtros
-
-        </button>
-
-      </div>
+      </button>
 
     </div>
+
+  </div>
+
+  <!-- Puestos -->
+
+  <div class="filtro-monitor">
+
+    <label class="filtro-monitor-titulo" for="filtrarPuesto">
+      PUESTO / ÁREA
+    </label>
+
+    <select
+      id="filtrarPuesto"
+      [(ngModel)]="filtroPuesto"
+      (ngModelChange)="aplicarFiltros()">
+
+      <option [ngValue]="0">
+        Todos los puestos
+      </option>
+
+      @for (p of puestos; track p.PuestoID) {
+
+        <option [ngValue]="p.PuestoID">
+          {{ p.NombrePuesto }}
+        </option>
+
+      }
+
+    </select>
+
+  </div>
+
+  <!-- Buscador -->
+
+  <div class="filtro-monitor filtro-busqueda-monitor">
+
+    <label class="filtro-monitor-titulo" for="buscarEmpleado">
+      BUSCAR EMPLEADO
+    </label>
+
+    <input
+      id="buscarEmpleado"
+      type="search"
+      [(ngModel)]="filtroBusqueda"
+      (ngModelChange)="aplicarBusqueda()"
+      placeholder="Nombre, apellido o nómina..."
+      autocomplete="off" />
+
+  </div>
+
+  <!-- Limpiar filtros -->
+
+  <div class="filtro-monitor-acciones">
+
+    <button
+      type="button"
+      class="btn-cancel"
+      (click)="limpiarFiltros()">
+
+      Limpiar
+
+    </button>
+
+  </div>
+
+</div>
+
 
     <!-- TABLA DE EMPLEADOS -->
 
@@ -610,10 +621,6 @@
     <div class="paginacion">
 
       <div class="paginacion-info">
-
-        <span>
-          Total filtrado: {{ totalRegistros }}
-        </span>
 
         <label>
 

@@ -78,8 +78,7 @@ export class PuestosComponent implements OnInit, OnDestroy {
 
       // Personal asignado
 
-      const totalPersonal =
-        puesto.PersonalActivo + puesto.PersonalInactivo;
+      const totalPersonal = puesto.PersonalActivo + puesto.PersonalInactivo;
 
       let cumplePersonal = true;
 
@@ -105,14 +104,25 @@ export class PuestosComponent implements OnInit, OnDestroy {
 
       // Resultado de todos los filtros
 
-      return (
-        cumpleEstado &&
-        cumplePersonal &&
-        cumpleBajas
-      );
+      return (cumpleEstado && cumplePersonal && cumpleBajas);
 
     });
   }
+
+
+// Seleccionar estado desde los botones
+
+seleccionarEstadoPuesto(
+  estado: 'todos' | 'activo' | 'inactivo'
+): void {
+
+  this.filtroActivas =
+    estado === 'todos' || estado === 'activo';
+
+  this.filtroInactivas =
+    estado === 'todos' || estado === 'inactivo';
+}
+
 
   // Validar casillas de estado
 

@@ -1,4 +1,3 @@
-
 <div class="puestos-container">
 
   <!-- Encabezado -->
@@ -8,10 +7,7 @@
       <h1>Administración de puestos</h1>
     </div>
 
-    <button
-      type="button"
-      class="primario"
-      (click)="nuevo()">
+    <button type="button" class="primario" (click)="nuevo()">
       + Nuevo puesto
     </button>
   </header>
@@ -56,46 +52,34 @@
 
   @if (mostrarFormulario) {
 
-    <section class="panel formulario">
+  <section class="panel formulario">
 
-      <h2>
-        {{ editandoId === null
-          ? 'Nuevo puesto'
-          : 'Editar puesto' }}
-      </h2>
+    <h2>
+      {{ editandoId === null
+      ? 'Nuevo puesto'
+      : 'Editar puesto' }}
+    </h2>
 
-      <label for="nombrePuesto">
-        Nombre del puesto / área
+    <label for="nombrePuesto">
+      Nombre del puesto / área
 
-        <input
-          id="nombrePuesto"
-          type="text"
-          [(ngModel)]="nombrePuesto"
-          maxlength="50"
-          placeholder="Ej. Soporte técnico" />
-      </label>
+      <input id="nombrePuesto" type="text" [(ngModel)]="nombrePuesto" maxlength="50"
+        placeholder="Ej. Soporte técnico" />
+    </label>
 
-      <div class="acciones">
+    <div class="acciones">
 
-        <button
-          type="button"
-          class="primario"
-          (click)="guardar()"
-          [disabled]="guardando">
-          {{ guardando ? 'Guardando...' : 'Guardar' }}
-        </button>
+      <button type="button" class="primario" (click)="guardar()" [disabled]="guardando">
+        {{ guardando ? 'Guardando...' : 'Guardar' }}
+      </button>
 
-        <button
-          type="button"
-          class="secundario"
-          (click)="cancelar()"
-          [disabled]="guardando">
-          Cancelar
-        </button>
+      <button type="button" class="secundario" (click)="cancelar()" [disabled]="guardando">
+        Cancelar
+      </button>
 
-      </div>
+    </div>
 
-    </section>
+  </section>
 
   }
 
@@ -106,7 +90,7 @@
     <header class="catalogo-encabezado">
 
       <div>
-        <h2>Catálogo de puestos</h2>
+        <h2>Puestos</h2>
 
         <p class="catalogo-subtitulo">
           Mostrando {{ puestosFiltrados.length }}
@@ -116,41 +100,43 @@
 
     </header>
 
-    <!-- Filtros siempre visibles -->
+    <!-- Filtros horizontales de puestos -->
 
-    <div class="filtros-puestos">
+    <div class="filtros-monitoreo">
 
       <!-- Estado del área -->
 
-      <div class="filtro-grupo">
+      <div class="filtro-monitor filtro-estatus">
 
-        <span class="filtro-etiqueta">
-          Estado del área
+        <span class="filtro-monitor-titulo">
+          ESTATUS
         </span>
 
-        <div class="checkbox-grupo">
+        <div class="estatus-opciones">
 
-          <label class="checkbox-opcion">
+          <button type="button" class="chip-estado" [class.seleccionado]="filtroActivas && filtroInactivas"
+            (click)="seleccionarEstadoPuesto('todos')">
 
-            <input
-              type="checkbox"
-              [(ngModel)]="filtroActivas"
-              (ngModelChange)="cambiarFiltroEstado()" />
+            <strong>{{ areasTotales }}</strong>
+            <small>Todas</small>
 
-            <span>Activas</span>
+          </button>
 
-          </label>
+          <button type="button" class="chip-estado" [class.seleccionado]="filtroActivas && !filtroInactivas"
+            (click)="seleccionarEstadoPuesto('activo')">
 
-          <label class="checkbox-opcion">
+            <strong>{{ areasActivas }}</strong>
+            <small>Activas</small>
 
-            <input
-              type="checkbox"
-              [(ngModel)]="filtroInactivas"
-              (ngModelChange)="cambiarFiltroEstado()" />
+          </button>
 
-            <span>Inactivas</span>
+          <button type="button" class="chip-estado" [class.seleccionado]="!filtroActivas && filtroInactivas"
+            (click)="seleccionarEstadoPuesto('inactivo')">
 
-          </label>
+            <strong>{{ areasInactivas }}</strong>
+            <small>Inactivas</small>
+
+          </button>
 
         </div>
 
@@ -158,29 +144,19 @@
 
       <!-- Personal asignado -->
 
-      <div class="filtro-grupo">
+      <div class="filtro-monitor">
 
-        <label
-          class="filtro-etiqueta"
-          for="filtroPersonal">
-          Personal asignado
+        <label class="filtro-monitor-titulo" for="filtroPersonal">
+
+          PERSONAL ASIGNADO
+
         </label>
 
-        <select
-          id="filtroPersonal"
-          [(ngModel)]="filtroPersonal">
+        <select id="filtroPersonal" [(ngModel)]="filtroPersonal">
 
-          <option value="todos">
-            Todos
-          </option>
-
-          <option value="con">
-            Con personal
-          </option>
-
-          <option value="sin">
-            Sin personal
-          </option>
+          <option value="todos">Todos</option>
+          <option value="con">Con personal</option>
+          <option value="sin">Sin personal</option>
 
         </select>
 
@@ -188,29 +164,19 @@
 
       <!-- Bajas históricas -->
 
-      <div class="filtro-grupo">
+      <div class="filtro-monitor">
 
-        <label
-          class="filtro-etiqueta"
-          for="filtroBajas">
-          Bajas históricas
+        <label class="filtro-monitor-titulo" for="filtroBajas">
+
+          BAJAS HISTÓRICAS
+
         </label>
 
-        <select
-          id="filtroBajas"
-          [(ngModel)]="filtroBajas">
+        <select id="filtroBajas" [(ngModel)]="filtroBajas">
 
-          <option value="todos">
-            Todas
-          </option>
-
-          <option value="con">
-            Con bajas
-          </option>
-
-          <option value="sin">
-            Sin bajas
-          </option>
+          <option value="todos">Todas</option>
+          <option value="con">Con bajas</option>
+          <option value="sin">Sin bajas</option>
 
         </select>
 
@@ -218,18 +184,14 @@
 
       <!-- Limpiar filtros -->
 
-      <div class="filtro-acciones">
+      <div class="filtro-monitor-acciones">
 
-        <button
-          type="button"
-          class="secundario"
-          (click)="limpiarFiltros()">
-          Limpiar filtros
-        </button>
+        <button type="button" class="secundario" (click)="limpiarFiltros()">Limpiar</button>
 
       </div>
 
     </div>
+
 
     <!-- Tabla de puestos -->
 
@@ -253,88 +215,80 @@
 
           @for (p of puestosFiltrados; track p.PuestoID) {
 
-            <tr>
+          <tr>
 
-              <td>
-                {{ p.NombrePuesto }}
-              </td>
+            <td>
+              {{ p.NombrePuesto }}
+            </td>
 
-              <td>
-                <strong>
-                  {{ obtenerTotalPersonal(p) }}
-                </strong>
-              </td>
+            <td>
+              <strong>
+                {{ obtenerTotalPersonal(p) }}
+              </strong>
+            </td>
 
-              <td>
-                {{ p.PersonalActivo }}
-              </td>
+            <td>
+              {{ p.PersonalActivo }}
+            </td>
 
-              <td>
-                {{ p.PersonalInactivo }}
-              </td>
+            <td>
+              {{ p.PersonalInactivo }}
+            </td>
 
-              <td>
-                {{ p.CantidadBajas }}
-              </td>
+            <td>
+              {{ p.CantidadBajas }}
+            </td>
 
-              <td>
+            <td>
 
-                <span
-                  class="estado"
-                  [class.activo]="p.Activo">
+              <span class="estado" [class.activo]="p.Activo">
 
-                  {{ p.Activo ? 'Activo' : 'Inactivo' }}
+                {{ p.Activo ? 'Activo' : 'Inactivo' }}
 
-                </span>
+              </span>
 
-              </td>
+            </td>
 
-              <td class="acciones-tabla">
+            <td class="acciones-tabla">
 
-                <button
-                  type="button"
-                  class="editar"
-                  (click)="editar(p)">
-                  Editar
-                </button>
+              <button type="button" class="editar" (click)="editar(p)">
+                Editar
+              </button>
 
-                <button
-                  type="button"
-                  [class]="p.Activo ? 'peligro' : 'primario'"
-                  (click)="solicitarCambio(p)">
+              <button type="button" [class]="p.Activo ? 'peligro' : 'primario'" (click)="solicitarCambio(p)">
 
-                  {{ p.Activo ? 'Dar de baja' : 'Reactivar' }}
+                {{ p.Activo ? 'Dar de baja' : 'Reactivar' }}
 
-                </button>
+              </button>
 
-              </td>
+            </td>
 
-            </tr>
+          </tr>
 
           } @empty {
 
-            <tr>
+          <tr>
 
-              <td colspan="7" class="tabla-vacia">
+            <td colspan="7" class="tabla-vacia">
 
-                @if (cargando) {
+              @if (cargando) {
 
-                  Cargando puestos...
+              Cargando puestos...
 
-                } @else if (puestos.length === 0) {
+              } @else if (puestos.length === 0) {
 
-                  No hay puestos registrados.
+              No hay puestos registrados.
 
-                } @else {
+              } @else {
 
-                  No existen puestos que coincidan
-                  con los filtros seleccionados.
+              No existen puestos que coincidan
+              con los filtros seleccionados.
 
-                }
+              }
 
-              </td>
+            </td>
 
-            </tr>
+          </tr>
 
           }
 
@@ -344,71 +298,52 @@
 
     </div>
 
-    <!-- Información sobre bajas -->
-
-    <p class="nota">
-      Dar de baja un área no elimina empleados ni cambia
-      automáticamente su estado. Se bloquean nuevas
-      asignaciones a esa área.
-    </p>
-
   </section>
 
   <!-- Modal de confirmación -->
 
   @if (puestoPorCambiar) {
 
-    <div class="modal-fondo">
+  <div class="modal-fondo">
 
-      <section
-        class="modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="tituloPuesto">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="tituloPuesto">
 
-        <h2 id="tituloPuesto">
+      <h2 id="tituloPuesto">
 
-          {{ puestoPorCambiar.Activo
-            ? '¿Dar de baja el área?'
-            : '¿Reactivar el área?' }}
+        {{ puestoPorCambiar.Activo
+        ? '¿Dar de baja el área?'
+        : '¿Reactivar el área?' }}
 
-        </h2>
+      </h2>
 
-        <p>
+      <p>
 
-          <strong>
-            {{ puestoPorCambiar.NombrePuesto }}
-          </strong>
+        <strong>
+          {{ puestoPorCambiar.NombrePuesto }}
+        </strong>
 
-          Sus empleados conservarán su estado actual.
+        Sus empleados conservarán su estado actual.
 
-        </p>
+      </p>
 
-        <div class="acciones">
+      <div class="acciones">
 
-          <button
-            type="button"
-            class="secundario"
-            (click)="cancelarCambio()"
-            [disabled]="cambiando">
-            Cancelar
-          </button>
+        <button type="button" class="secundario" (click)="cancelarCambio()" [disabled]="cambiando">
+          Cancelar
+        </button>
 
-          <button
-            type="button"
-            [class]="puestoPorCambiar.Activo ? 'peligro' : 'primario'"
-            (click)="confirmarCambio()"
-            [disabled]="cambiando">
+        <button type="button" [class]="puestoPorCambiar.Activo ? 'peligro' : 'primario'" (click)="confirmarCambio()"
+          [disabled]="cambiando">
 
-            {{ cambiando ? 'Procesando...' : 'Confirmar' }}
+          {{ cambiando ? 'Procesando...' : 'Confirmar' }}
 
-          </button>
+        </button>
 
-        </div>
+      </div>
 
-      </section>
+    </section>
 
-    </div>
+  </div>
 
   }
 
@@ -416,24 +351,16 @@
 
   @if (mensajeToast) {
 
-    <div
-      class="toast"
-      [class.exito]="tipoToast === 'exito'"
-      [class.error]="tipoToast === 'error'"
-      [class.advertencia]="tipoToast === 'advertencia'"
-      role="status"
-      aria-live="polite">
+  <div class="toast" [class.exito]="tipoToast === 'exito'" [class.error]="tipoToast === 'error'"
+    [class.advertencia]="tipoToast === 'advertencia'" role="status" aria-live="polite">
 
-      <span>{{ mensajeToast }}</span>
+    <span>{{ mensajeToast }}</span>
 
-      <button
-        type="button"
-        (click)="cerrarToast()"
-        aria-label="Cerrar notificación">
-        ×
-      </button>
+    <button type="button" (click)="cerrarToast()" aria-label="Cerrar notificación">
+      ×
+    </button>
 
-    </div>
+  </div>
 
   }
 
