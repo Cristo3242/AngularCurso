@@ -1,0 +1,146 @@
+
+/* CONTENEDOR PRINCIPAL */
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.inicio-container {
+  max-width: 1100px;
+  margin: 50px auto;
+  padding: 24px;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* ENCABEZADO */
+
+.inicio-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.inicio-header h1 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 32px;
+}
+
+.inicio-header p {
+  margin-top: 10px;
+  color: #64748b;
+  font-size: 15px;
+}
+
+/* CONTENEDOR DE TARJETAS */
+
+.modulos {
+  display: grid;
+  grid-template-columns: repeat(2, 260px);
+  justify-content: center;
+  gap: 28px;
+}
+
+/* TARJETAS CUADRADAS */
+
+.modulo-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+
+  width: 260px;
+  aspect-ratio: 1 / 1;
+  box-sizing: border-box;
+  padding: 22px;
+
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+
+  text-align: center;
+  text-decoration: none;
+  color: #334155;
+
+  box-shadow: 0 5px 20px #0000000a;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.modulo-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 28px #00000015;
+  border-color: #93c5fd;
+}
+
+.modulo-card:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+}
+
+/* ICONOS */
+
+.modulo-icono {
+  font-size: 44px;
+  line-height: 1;
+}
+
+/* TÍTULOS */
+
+.modulo-card h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 23px;
+}
+
+/* DESCRIPCIÓN */
+
+.modulo-card p {
+  margin: 0;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.5;
+  flex: 0;
+}
+
+/* ENLACES */
+
+.modulo-card span {
+  color: #2563eb;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 650px) {
+  .inicio-container {
+    margin: 20px auto;
+    padding: 15px;
+  }
+
+  .inicio-header h1 {
+    font-size: 26px;
+  }
+
+  .modulos {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 20px;
+  }
+
+  .modulo-card {
+    width: min(260px, 100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modulo-card {
+    transition: none;
+  }
+}

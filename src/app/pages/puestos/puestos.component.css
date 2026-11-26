@@ -1,7 +1,5 @@
 
-/* ==========================================
-   CONTENEDOR PRINCIPAL
-   ========================================== */
+/* Contenedor principal */
 
 :host {
   display: block;
@@ -19,9 +17,7 @@
   color: #1e293b;
 }
 
-/* ==========================================
-   ENCABEZADO
-   ========================================== */
+/* Encabezado */
 
 .encabezado {
   display: flex;
@@ -36,9 +32,9 @@
 .encabezado h1 {
   margin: 0;
 
+  color: #0f172a;
   font-size: 27px;
   font-weight: 700;
-  color: #0f172a;
 }
 
 .encabezado p {
@@ -49,9 +45,7 @@
   line-height: 1.5;
 }
 
-/* ==========================================
-   INDICADORES
-   ========================================== */
+/* Indicadores */
 
 .resumen {
   display: grid;
@@ -100,9 +94,7 @@
   line-height: 1.2;
 }
 
-/* ==========================================
-   PANELES Y FORMULARIOS
-   ========================================== */
+/* Paneles */
 
 .panel {
   min-width: 0;
@@ -123,6 +115,8 @@
   font-size: 20px;
   font-weight: 650;
 }
+
+/* Formulario */
 
 .formulario label {
   display: flex;
@@ -166,9 +160,7 @@
   color: #94a3b8;
 }
 
-/* ==========================================
-   ACCIONES
-   ========================================== */
+/* Acciones */
 
 .acciones {
   display: flex;
@@ -179,9 +171,7 @@
   margin-top: 20px;
 }
 
-/* ==========================================
-   BOTONES
-   ========================================== */
+/* Botones */
 
 .primario,
 .secundario,
@@ -209,8 +199,6 @@
     border-color 0.2s ease;
 }
 
-/* BOTÓN PRINCIPAL */
-
 .primario {
   background: #2563eb;
   color: #ffffff;
@@ -219,8 +207,6 @@
 .primario:hover:not(:disabled) {
   background: #1d4ed8;
 }
-
-/* BOTÓN SECUNDARIO */
 
 .secundario {
   background: #e2e8f0;
@@ -231,8 +217,6 @@
   background: #cbd5e1;
 }
 
-/* BOTÓN EDITAR */
-
 .editar {
   background: #dbeafe;
   color: #1d4ed8;
@@ -241,8 +225,6 @@
 .editar:hover:not(:disabled) {
   background: #bfdbfe;
 }
-
-/* BOTÓN DAR DE BAJA */
 
 .peligro {
   background: #fee2e2;
@@ -253,28 +235,165 @@
   background: #fecaca;
 }
 
-/* BOTONES DESHABILITADOS */
-
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* ACCESIBILIDAD */
-
 button:focus-visible,
-input:focus-visible {
+input:focus-visible,
+select:focus-visible {
   outline: 3px solid rgba(37, 99, 235, 0.35);
   outline-offset: 2px;
 }
 
-/* ==========================================
-   TABLA DE PUESTOS
-   ========================================== */
+/* Encabezado del catálogo */
+
+.catalogo-encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+
+  margin-bottom: 20px;
+}
+
+.catalogo-encabezado h2 {
+  margin: 0;
+}
+
+.catalogo-subtitulo {
+  margin: 6px 0 0;
+
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* Panel de filtros */
+
+.filtros-puestos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+
+  margin-bottom: 22px;
+  padding: 22px;
+
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.filtro-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+
+.filtro-etiqueta {
+  color: #475569;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Casillas de estado */
+
+.checkbox-grupo {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  min-height: 43px;
+}
+
+.checkbox-opcion {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 9px;
+
+  padding: 10px 14px;
+
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+
+  cursor: pointer;
+  user-select: none;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.checkbox-opcion:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+
+.checkbox-opcion input[type="checkbox"] {
+  flex-shrink: 0;
+
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  padding: 0;
+
+  accent-color: #2563eb;
+  cursor: pointer;
+}
+
+.checkbox-opcion span {
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Selectores de filtros */
+
+.filtro-grupo select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+
+  padding: 11px 13px;
+
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+
+  color: #334155;
+  font-family: inherit;
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+.filtro-grupo select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+/* Limpiar filtros */
+
+.filtro-acciones {
+  grid-column: 1 / -1;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* Tabla */
 
 .tabla-contenedor {
   width: 100%;
   max-width: 100%;
+
   overflow-x: auto;
 
   border: 1px solid #e2e8f0;
@@ -291,8 +410,6 @@ input:focus-visible {
   background: #ffffff;
 }
 
-/* ENCABEZADOS */
-
 .tabla-contenedor th {
   padding: 15px 16px;
 
@@ -305,8 +422,6 @@ input:focus-visible {
   white-space: nowrap;
 }
 
-/* CELDAS */
-
 .tabla-contenedor td {
   padding: 14px 16px;
 
@@ -316,8 +431,6 @@ input:focus-visible {
   font-size: 13px;
   vertical-align: middle;
 }
-
-/* FILAS */
 
 .tabla-contenedor tbody tr:nth-child(even) {
   background: #f8fafc;
@@ -331,7 +444,7 @@ input:focus-visible {
   border-bottom: none;
 }
 
-/* ACCIONES DE LA TABLA */
+/* Acciones de la tabla */
 
 .acciones-tabla {
   white-space: nowrap;
@@ -341,9 +454,7 @@ input:focus-visible {
   margin: 3px;
 }
 
-/* ==========================================
-   ETIQUETAS DE ESTADO
-   ========================================== */
+/* Estados */
 
 .estado {
   display: inline-block;
@@ -359,17 +470,37 @@ input:focus-visible {
   white-space: nowrap;
 }
 
-/* ÁREA ACTIVA */
-
 .estado.activo {
   background: #dcfce7;
   color: #166534;
 }
 
+/* Tabla sin resultados */
 
-/* ==========================================
-   MODAL DE CONFIRMACIÓN
-   ========================================== */
+.tabla-vacia {
+  padding: 28px 15px !important;
+
+  color: #64748b !important;
+  font-size: 13px;
+  text-align: center;
+}
+
+/* Nota informativa */
+
+.nota {
+  margin: 18px 0 0;
+  padding: 12px 14px;
+
+  background: #f8fafc;
+  border-left: 3px solid #94a3b8;
+  border-radius: 6px;
+
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* Modal */
 
 .modal-fondo {
   position: fixed;
@@ -419,9 +550,7 @@ input:focus-visible {
   margin-top: 24px;
 }
 
-/* ==========================================
-   NOTIFICACIONES TOAST
-   ========================================== */
+/* Notificaciones */
 
 .toast {
   position: fixed;
@@ -453,25 +582,17 @@ input:focus-visible {
   animation: aparecerToast 0.25s ease-out;
 }
 
-/* TOAST ÉXITO */
-
 .toast.exito {
   border-left-color: #16a34a;
 }
-
-/* TOAST ERROR */
 
 .toast.error {
   border-left-color: #dc2626;
 }
 
-/* TOAST ADVERTENCIA */
-
 .toast.advertencia {
   border-left-color: #f59e0b;
 }
-
-/* CERRAR TOAST */
 
 .toast button {
   flex-shrink: 0;
@@ -502,9 +623,7 @@ input:focus-visible {
   }
 }
 
-/* ==========================================
-   TABLETS
-   ========================================== */
+/* Tablet */
 
 @media (max-width: 1050px) {
 
@@ -518,9 +637,7 @@ input:focus-visible {
 
 }
 
-/* ==========================================
-   CELULARES
-   ========================================== */
+/* Celulares */
 
 @media (max-width: 720px) {
 
@@ -535,10 +652,6 @@ input:focus-visible {
 
   .encabezado h1 {
     font-size: 23px;
-  }
-
-  .encabezado p {
-    font-size: 13px;
   }
 
   .panel {
@@ -557,6 +670,16 @@ input:focus-visible {
     font-size: 26px;
   }
 
+  .filtros-puestos {
+    grid-template-columns: 1fr;
+    gap: 17px;
+    padding: 16px;
+  }
+
+  .filtro-acciones {
+    justify-content: flex-start;
+  }
+
   .tabla-contenedor th,
   .tabla-contenedor td {
     padding: 12px 13px;
@@ -564,9 +687,7 @@ input:focus-visible {
 
 }
 
-/* ==========================================
-   CELULARES PEQUEÑOS
-   ========================================== */
+/* Celulares pequeños */
 
 @media (max-width: 550px) {
 
@@ -604,222 +725,7 @@ input:focus-visible {
 
 }
 
-/* ==========================================
-   MOVIMIENTO REDUCIDO
-   ========================================== */
-
-@media (prefers-reduced-motion: reduce) {
-
-  .resumen article,
-  .primario,
-  .secundario,
-  .editar,
-  .peligro {
-    transition: none;
-  }
-
-  .toast {
-    animation: none;
-  }
-
-}
-
-
-/* ==========================================
-   ENCABEZADO DEL CATÁLOGO
-   ========================================== */
-
-.catalogo-encabezado {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 15px;
-
-  margin-bottom: 20px;
-}
-
-.catalogo-encabezado h2 {
-  margin: 0;
-}
-
-.catalogo-subtitulo {
-  margin: 6px 0 0;
-  color: #64748b;
-  font-size: 12px;
-}
-
-/* ==========================================
-   BOTÓN DE FILTROS
-   ========================================== */
-
-.btn-filtros {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  gap: 9px;
-
-  padding: 10px 16px;
-
-  background: #eff6ff;
-  color: #1d4ed8;
-
-  border: 1px solid #bfdbfe;
-  border-radius: 9px;
-
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.btn-filtros:hover {
-  background: #dbeafe;
-}
-
-/* ==========================================
-   PANEL DE FILTROS
-   ========================================== */
-
-.filtros-puestos {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
-
-  margin-bottom: 20px;
-  padding: 22px;
-
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-}
-
-.filtro-grupo {
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-  min-width: 0;
-}
-
-.filtro-etiqueta {
-  color: #475569;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-/* ==========================================
-   CASILLAS
-   ========================================== */
-
-.checkbox-grupo {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-
-  min-height: 43px;
-}
-
-.checkbox-opcion {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-
-  padding: 10px 14px;
-
-  background: white;
-  border: 1px solid #cbd5e1;
-  border-radius: 9px;
-
-  cursor: pointer;
-  user-select: none;
-}
-
-.checkbox-opcion:hover {
-  background: #eff6ff;
-  border-color: #93c5fd;
-}
-
-.checkbox-opcion input[type="checkbox"] {
-  width: 17px;
-  height: 17px;
-  margin: 0;
-
-  accent-color: #2563eb;
-  cursor: pointer;
-}
-
-.checkbox-opcion span {
-  color: #334155;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-/* ==========================================
-   SELECTORES
-   ========================================== */
-
-.filtro-grupo select {
-  width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-
-  padding: 11px 13px;
-
-  background: white;
-  border: 1px solid #cbd5e1;
-  border-radius: 9px;
-
-  color: #334155;
-  font-family: inherit;
-  font-size: 13px;
-}
-
-.filtro-grupo select:focus {
-  outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px #2563eb1a;
-}
-
-/* ==========================================
-   ACCIONES
-   ========================================== */
-
-.filtro-acciones {
-  grid-column: 1 / -1;
-  display: flex;
-  justify-content: flex-end;
-}
-
-/* ==========================================
-   TABLA SIN RESULTADOS
-   ========================================== */
-
-.tabla-vacia {
-  text-align: center;
-  padding: 28px 15px !important;
-
-  color: #64748b !important;
-  font-size: 13px;
-}
-
-/* ==========================================
-   RESPONSIVE
-   ========================================== */
-
-@media (max-width: 720px) {
-
-  .filtros-puestos {
-    grid-template-columns: 1fr;
-    padding: 16px;
-    gap: 17px;
-  }
-
-  .filtro-acciones {
-    justify-content: flex-start;
-  }
-
-}
+/* Teléfonos muy pequeños */
 
 @media (max-width: 480px) {
 
@@ -833,6 +739,25 @@ input:focus-visible {
 
   .filtro-acciones button {
     width: 100%;
+  }
+
+}
+
+/* Movimiento reducido */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .resumen article,
+  .primario,
+  .secundario,
+  .editar,
+  .peligro,
+  .checkbox-opcion {
+    transition: none;
+  }
+
+  .toast {
+    animation: none;
   }
 
 }

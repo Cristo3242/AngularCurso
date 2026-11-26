@@ -343,3 +343,35 @@
     transition: none;
   }
 }
+
+
+/* ==========================================
+   LOGO COMO ENLACE AL INICIO
+   ========================================== */
+
+.marca-informacion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  min-width: 0;
+
+  color: #ffffff;
+  text-decoration: none;
+
+  cursor: pointer;
+}
+
+.marca-informacion:hover strong {
+  color: #93c5fd;
+}
+
+.marca-informacion:hover .marca-icono {
+  background: #1d4ed8;
+}
+
+.marca-informacion:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 5px;
+  border-radius: 5px;
+}

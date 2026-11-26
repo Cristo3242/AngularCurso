@@ -37,9 +37,9 @@ export class EmpleadosComponent implements OnInit, OnDestroy {
   cambiandoEstado = false;
 
   // Filtros
-  mostrarFiltros = false;
   filtroActivos = true;
   filtroInactivos = true;
+
   filtroEstado: EstadoFiltro = 'todos';
   filtroBusqueda = '';
   filtroPuesto = 0;
@@ -85,14 +85,12 @@ export class EmpleadosComponent implements OnInit, OnDestroy {
   vistaPreviaFoto: string | null = null;
   fotoActualDisponible = false;
 
-
   get areasInactivas(): number {
   if (!this.estadisticas) {
     return 0;
   }
 
-  return this.estadisticas.areasTotal -
-         this.estadisticas.areasActivas;
+  return this.estadisticas.areasTotal - this.estadisticas.areasActivas;
 }
 
 areaActiva(puestoID: number): boolean {

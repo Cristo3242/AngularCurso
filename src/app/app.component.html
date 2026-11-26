@@ -23,29 +23,42 @@
     [attr.aria-hidden]="!menuAbierto"
   >
 
-    <div class="marca">
+    
+<div class="marca">
 
-      <div class="marca-informacion">
-        <span class="marca-icono">RH</span>
+  <!-- LOGO Y NOMBRE: REGRESAR AL INICIO -->
 
-        <div>
-          <strong>Gestión RH</strong>
-          <small>Administración de personal</small>
-        </div>
-      </div>
+  <a
+    routerLink="/"
+    class="marca-informacion"
+    aria-label="Regresar al menú principal"
+  >
 
-      <button
-        type="button"
-        class="btn-cerrar-menu"
-        (click)="cerrarMenu()"
-        aria-label="Cerrar menú">
-        &times;
-      </button>
+    <span class="marca-icono">
+      RH
+    </span>
 
+    <div>
+      <strong>Gestión RH</strong>
+      <small>Administración de personal</small>
     </div>
 
-    <nav aria-label="Navegación principal">
+  </a>
 
+  <!-- CERRAR MENÚ -->
+
+  <button
+    type="button"
+    class="btn-cerrar-menu"
+    (click)="cerrarMenu()"
+    aria-label="Cerrar menú"
+  >
+    &times;
+  </button>
+
+</div>
+
+    <nav aria-label="Navegación principal">
       <a
         routerLink="/empleados"
         routerLinkActive="seleccionado"
@@ -55,9 +68,7 @@
 
         <span class="menu-icono">👥</span>
         <span>Usuarios</span>
-
       </a>
-
       <a
         routerLink="/puestos"
         routerLinkActive="seleccionado"
@@ -70,8 +81,6 @@
       </a>
 
     </nav>
-
-   
 
   </aside>
 
